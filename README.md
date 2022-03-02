@@ -10,5 +10,5 @@ Python script to....
 
 # Link to resources
 
-*
-*
+* https://code.tutsplus.com/tutorials/top-15-best-practices-for-writing-super-readable-code--net-8118
+* https://mitcommlab.mit.edu/broad/commkit/coding-and-comment-style/
