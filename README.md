@@ -50,6 +50,9 @@ The output datasets area:
 * a dataset with the mean climate cooling capacity of each city
 * a dataset with the percentage of inhabitants living in areas that show a good - very good cooling capacity (cooling capacity more than 60)
 
+RELEASE DATE
+
+August 2022
 
 ARTICLE ASSOCIATED WITH THIS MODEL:
 
@@ -57,17 +60,20 @@ Syrbe et al. (2022): Vorschlag für einen Klimaregulationsindikator [Suggestion 
 
 LINK TO RESOURCES AND LITERATURE
 
-* BKG (2017)
+* BKG - Bundesamt für Kartographie und Geodäsie (2017): Verwaltungsgebiete 1:25.000 (VG25) zum Gebietsstand von Deutschland vom 31.12.2016, Stand der Dokumentation: 05.04.2017. Bundesamt für Kartographie und Geodäsie (BKG), Frankfurt (Main).  
 
-* BKG (2018): 
+* BKG - Bundesamt für Kartographie und Geodäsie(2020):  Dokumentation. Digitales Landbedeckungsmodell für Deutschland LBM-DE 2018. Stand 20.11.2020. 
+Frankfurt (Main), S.63. 
 
-* Copernicus (2021): 
+* Copernicus (2021): Urban Atlas. Street Tree Layer (STL) 2018. URL: https://land.copernicus.eu/local/urban-atlas/street-tree-layer-stl-2018 
+(Accessed: 13.12.2021). 
 
-* Destatis (2016): 
+* Destatis (2015): Zensusatlas 2011. Updated in 2015. URL: https://atlas.zensus2011.de/ (Accessed: 27.07.2022). 
 
-* Jaganmohan M, Knapp S, Buchmann CM, Schwarz N. The Bigger, the Better? The Influence of Urban Green Space Design on Cooling Effects for Residential Areas. J Environ Qual. 2016 Jan;45(1):134-45. doi: 10.2134/jeq2015.01.0062. PMID: 26828169.
+* Jaganmohan M., Knapp S., Buchmann C.M., Schwarz N. (2016): The Bigger, the Better? The Influence of Urban Green Space Design on Cooling Effects for Residential Areas. Journal of Environmental Quality 45(1):134-45. doi: 10.2134/jeq2015.01.0062.
 
-* Krüger et al. (2021): 
+* Krüger, T., Eichler, L., Meinel, G., Tenikl, J., Taubenböck, H., Wurm, M. (2022). Urban Green Raster Germany 2018 (1 (2021)) [Data set]. 
+https://doi.org/10.26084/ioerfdz-r10-urbgrn2018. 
 
 * Zardo, L., Geneletti, D., Pérez-Soba, M. und van Eupen, M. (2017): Estimating the cooling capacity of green infrastructures to support urban planning. Ecosystem Services (26), 225-235.
 
