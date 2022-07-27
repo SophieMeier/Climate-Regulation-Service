@@ -32,9 +32,9 @@ Time period used in the model: 2011.
 
 * 'Street_Tree': Vector dataset from Copernicus (2021) (Urban Atlas - Street Tree layer). Time period used in the model: 2018, Release 2021 (not validated).
 
-* vg25_GEM_Selektion_Stadt': Cities with more than 50,000 inhabitants. Taken from VG25, Federal Agency of Cartography and Geodesy.
+* vg25_GEM_Selektion_Stadt': Cities with more than 50,000 inhabitants. Taken from VG25, Federal Agency of Cartography and Geodesy (BKG 2017).
 
-* 'Urban_Functional_Areas': Indicates those areas where Street Tree data from Urban Atlas (Copernicus) were available. Only cities (inhabitants > 50,000) were used in the model that fell in the urban functional areas. As a consequence, some cities, especially in the state of Baden-Württemberg and North-Rhine-Westfalia could not be considered in the modelling approach.
+* 'Urban_Functional_Areas': Indicates those areas where Street Tree data from Urban Atlas (Copernicus) were available. Only cities (inhabitants > 50,000) were used in the model that fell in the urban functional areas. As a consequence, some cities, especially in the state of Baden-Württemberg and North-Rhine-Westfalia could not be considered in the modelling approach (Copernicus 2021).
 
 MODELLING PROCESS
 
@@ -57,17 +57,19 @@ Syrbe et al. (2022): Vorschlag für einen Klimaregulationsindikator [Suggestion 
 
 LINK TO RESOURCES AND LITERATURE
 
-BKG (2018): 
+* BKG (2017)
 
-Copernicus (2021): 
+* BKG (2018): 
 
-Destatis (2016): 
+* Copernicus (2021): 
 
-Jaganmohan M, Knapp S, Buchmann CM, Schwarz N. The Bigger, the Better? The Influence of Urban Green Space Design on Cooling Effects for Residential Areas. J Environ Qual. 2016 Jan;45(1):134-45. doi: 10.2134/jeq2015.01.0062. PMID: 26828169.
+* Destatis (2016): 
 
-Krüger et al. (2021): 
+* Jaganmohan M, Knapp S, Buchmann CM, Schwarz N. The Bigger, the Better? The Influence of Urban Green Space Design on Cooling Effects for Residential Areas. J Environ Qual. 2016 Jan;45(1):134-45. doi: 10.2134/jeq2015.01.0062. PMID: 26828169.
 
-Zardo, L., Geneletti, D., Pérez-Soba, M. und van Eupen, M. (2017): Estimating the cooling capacity of green infrastructures to support urban planning. Ecosystem Services (26), 225-235.
+* Krüger et al. (2021): 
+
+* Zardo, L., Geneletti, D., Pérez-Soba, M. und van Eupen, M. (2017): Estimating the cooling capacity of green infrastructures to support urban planning. Ecosystem Services (26), 225-235.
 
 * https://code.tutsplus.com/tutorials/top-15-best-practices-for-writing-super-readable-code--net-8118
 * https://mitcommlab.mit.edu/broad/commkit/coding-and-comment-style/
