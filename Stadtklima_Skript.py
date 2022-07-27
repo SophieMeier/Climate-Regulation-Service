@@ -30,7 +30,7 @@ arcpy.env.extent = "MAXOF"
 # YEAR
 Jahr = "_2018"
 
-# GEODATABASES
+# INPUT AND OUTPUT GEODATABASES
 # Please replace by own paths # Bitte eigenen Pfad angeben
 Eingangsdaten_gdb = "E:/Meier/Stadtklima/Eingangsdaten.gdb"   
 output_gdb_1 = "E:/Meier/Stadtklima/output_1" + Jahr + ".gdb" # output for ...
