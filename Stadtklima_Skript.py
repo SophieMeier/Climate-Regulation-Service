@@ -1,54 +1,56 @@
 # -*- coding: iso-8859-1 -*-
 
 # PYTHON-VERSION 3.6
-# PROGRAMM: PYCHARM 2019.3.1
+# SOFTWARE: PYCHARM 2019.3.1, ARCGISpro 3.0.0
 
-# INDIKATOR STADTKLIMA-REGULATION
+### INDICATOR CLIMATE REGULATION IN CITIES ### KLIMAREGULATIONSINDIKATOR FÜR STÄDTE
 
-
-
+# SHORT DESCRIPTION OF THE INDICATOR
+# Using land cover type, percentage of tree canopy cover, and area size, a cooling capacity value (CCA value) is determined for each area in 
+# Cities with a population of 50,000 or more. By intersecting population data with cooling capacity information with can be determined, 
+# where residents are provided with cooling capacity by urban greenery and to what degree.
 
 # KURZBESCHREIBUNG DES INDIKATORS
-# Über den Bodenbedeckungstyp, den Anteil der Baumkronenbedeckung und der Flächengröße wird ein Kühlungskapazitätswert (CCA-Wert) in Städten ab 50.000 Einwohnern ermittelt.
-# Durch die Verschneidung von Einwohnerdaten mit der Information zur Kühlungskapazität mit kann ermittelt werden, wo Einwohner in welchem Maß mit Kühlungsleistung durch urbanes Grün versorgt werden.
-# Berechnet mit LBM-DE 2018, Neulieferung von 2021
+# Über den Bodenbedeckungstyp, den Anteil der Baumkronenbedeckung und der Flächengröße wird ein Kühlungskapazitätswert (CCA-Wert) für jede Fläche in 
+# Städten ab 50.000 Einwohnern ermittelt. Durch die Verschneidung von Einwohnerdaten mit der Information zur Kühlungskapazität mit kann ermittelt werden, 
+# wo Einwohner in welchem Maß mit Kühlungsleistung durch urbanes Grün versorgt werden.
 
-# UMGEBUNGSEINSTELLUNGEN
+# ENVIRONMENT OPTIONS
 import arcpy
 import math
 from arcpy import env
 from arcpy.sa import *
 arcpy.env.parallelProcessingFactor = "100%"
 arcpy.env.overwriteOutput = True
-arcpy.env.snapRaster = "E:/Meier/Stadtklima/Eingangsdaten.gdb/s2_2018_lcc_classes_1_8_atkismod_Dresden"
-arcpy.env.snapRaster = "D:/tarox1_user5/OESL_P644_671/INSPIRE_Grid/inspire_grids_10.gdb/raster_10_complete" # INSPIRE-Grid mit 10x10m Rasterzellgröße
+
+# INSPIRE-Grid with 10x10 m Raster Cell Size # INSPIRE-Grid mit 10x10m Rasterzellgröße 
+arcpy.env.snapRaster = "D:/tarox1_user5/OESL_P644_671/INSPIRE_Grid/inspire_grids_10.gdb/raster_10_complete" 
 arcpy.env.extent = "MAXOF"
 
-# JAHR - ZEITSCHNITT
+# YEAR
 Jahr = "_2018"
 
-# Geodatabases # Replace by own paths #
-Eingangsdaten_gdb = "E:/Meier/Stadtklima/Eingangsdaten.gdb"  
+# GEODATABASES
+# Please replace by own paths # Bitte eigenen Pfad angeben
+Eingangsdaten_gdb = "E:/Meier/Stadtklima/Eingangsdaten.gdb"   
 output_gdb_1 = "E:/Meier/Stadtklima/output_1" + Jahr + ".gdb" # output for ...
 output_gdb_2 = "E:/Meier/Stadtklima/output_2" + Jahr + ".gdb" # output for ...
 output_gdb_3 = "E:/Meier/Stadtklima/output_3" + Jahr + ".gdb"
 
-# Datensätze
-# lbm_DE = "E:/Meier/Stadtklima/Eingangsdaten.gdb/de_lbm_de_2018_r50000_Dresden_VG25_GEM_2016"
+# DATA SETS # DATENSÄTZE
+# Please replace by own paths # Bitte eigenen Pfad angeben
 lbm_DE = "D:/tarox1_user5/OESL_P644_671/LBM/oriG/lbm_de_2018.gdb/lbm_de_2018_v2"
 Einwohnergrid = "D:/tarox1_user5/OESL_P644_671/Einwohnerzahlen/zensus2011.gdb/grid_r100_zensus11ew"
     # Einwohnerraster in Vektorformat umwandeln:
         # 1) Raster to point
         # 2) Fishnet erzeugen mit Punkten aus 1) als 'Labels'
-# Stadtgruenraster = "E:/Meier/Stadtklima/Eingangsdaten.gdb/s2_2018_lcc_classes_1_8_atkismod_Dresden"
 Stadtgruenraster = "D:/tarox1_user5/OESL_P644_671/Stadtklima/Sentinel_II.gdb/s2_2018_lcc_classes_1_8_atkismod"
-# Street_Tree = "D:/tarox1_user5/OESL_P644_671/Stadtklima/Street_Tree_Layer.gdb/Street_Tree_Layer_Dresden"
 Street_Tree = "D:/tarox1_user5/OESL_P644_671/Urban_Atlas/Street_Tree_Layer_2018.gdb/UA_STL_2018"
-vg25_GEM_Selektion_Stadt = "D:/tarox1_user5/OESL_P644_671/VG_ATKIS/VG_25/stadte_50000_ew.gdb/VG25_2016_join_50000EW"       # enthält Städte ab 50.000 Einwohner
+
+# Cities with more than 50,000 inhabitants #  Städte ab 50.000 Einwohner
+vg25_GEM_Selektion_Stadt = "D:/tarox1_user5/OESL_P644_671/VG_ATKIS/VG_25/stadte_50000_ew.gdb/VG25_2016_join_50000EW"    
 lyr = Eingangsdaten_gdb + "\\VG25_2016_join_50000EW.lyr"
 Urban_Functional_Areas = "D:/tarox1_user5/OESL_P644_671/Urban_Atlas/Street_Tree_Layer_2018.gdb/UA_Boundary_STL_2018"
-
-
 
 
 # STÄDTE AB 50.000 EINWOHNERN (AUS VG25) INNERHALB DER URBAN ATLAS FUNCTIONAL AREAS SELEKTIEREN
