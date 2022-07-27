@@ -23,7 +23,7 @@ from arcpy.sa import *
 arcpy.env.parallelProcessingFactor = "100%"
 arcpy.env.overwriteOutput = True
 
-# INSPIRE-Grid with 10x10 m Raster Cell Size # INSPIRE-Grid mit 10x10m Rasterzellgröße 
+# Snap-Raster: INSPIRE-conform-Grid (EU standard) with 10x10 m Raster Cell Size # Fang-Raster: INSPIRE-konformes Grid (nach EU-Standard) mit 10x10m Rasterzellgröße 
 arcpy.env.snapRaster = "D:/tarox1_user5/OESL_P644_671/INSPIRE_Grid/inspire_grids_10.gdb/raster_10_complete" 
 arcpy.env.extent = "MAXOF"
 
@@ -41,16 +41,13 @@ output_gdb_3 = "E:/Meier/Stadtklima/output_3" + Jahr + ".gdb"
 # Please replace by own paths # Bitte eigenen Pfad angeben
 lbm_DE = "D:/tarox1_user5/OESL_P644_671/LBM/oriG/lbm_de_2018.gdb/lbm_de_2018_v2"
 Einwohnergrid = "D:/tarox1_user5/OESL_P644_671/Einwohnerzahlen/zensus2011.gdb/grid_r100_zensus11ew"
-    # Einwohnerraster in Vektorformat umwandeln:
-        # 1) Raster to point
-        # 2) Fishnet erzeugen mit Punkten aus 1) als 'Labels'
 Stadtgruenraster = "D:/tarox1_user5/OESL_P644_671/Stadtklima/Sentinel_II.gdb/s2_2018_lcc_classes_1_8_atkismod"
 Street_Tree = "D:/tarox1_user5/OESL_P644_671/Urban_Atlas/Street_Tree_Layer_2018.gdb/UA_STL_2018"
-
+Urban_Functional_Areas = "D:/tarox1_user5/OESL_P644_671/Urban_Atlas/Street_Tree_Layer_2018.gdb/UA_Boundary_STL_2018"
 # Cities with more than 50,000 inhabitants #  Städte ab 50.000 Einwohner
 vg25_GEM_Selektion_Stadt = "D:/tarox1_user5/OESL_P644_671/VG_ATKIS/VG_25/stadte_50000_ew.gdb/VG25_2016_join_50000EW"    
-Urban_Functional_Areas = "D:/tarox1_user5/OESL_P644_671/Urban_Atlas/Street_Tree_Layer_2018.gdb/UA_Boundary_STL_2018"
 
+# PROCESSING STEPS # PROZESSIERUNGSSCHRITTE
 
 # STÄDTE AB 50.000 EINWOHNERN (AUS VG25) INNERHALB DER URBAN ATLAS FUNCTIONAL AREAS SELEKTIEREN
 # ÜBER SELECT BY LOCATION
