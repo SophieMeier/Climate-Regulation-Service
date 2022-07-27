@@ -21,15 +21,16 @@ Das Modell basiert auf dem Climate Cooling Assessment (CCA) von Zardo et al. (20
 
 INPUT DATA FOR THE MODEL
 
-* 'lbm_DE': Land cover model Germany - dataset with land use and land cover types (according to CORINE land cover) from the Federal Agency of Cartography and Geodesy. Minimum mapping unit: 1 ha.
+* 'lbm_DE': Land cover model Germany - dataset with land use and land cover types (according to CORINE land cover) from the Federal Agency of Cartography and Geodesy. Minimum mapping unit: 1 ha. Source: BKG 2018
 Time period used in the model: 2018 (LBM-DE 2018, release 2020).
 
 * 'Einwohnergrid': Grid with the number of habitats of the buildings in the cities. The original dataset was from Destatis (Zenus) and is a raster file. 
-This raster file needs to be converted to vector format by two steps in ArcGIS: 1) Raster to Point, 2) Create Fishnet with and use Points-Features created in 1) as labels. Time period used in the model: 2011
+This raster file needs to be converted to vector format by two steps in ArcGIS: 1) Raster to Point, 2) Create Fishnet with and use Points-Features created in 1) as labels. Source: Destatis 2016
+Time period used in the model: 2011. 
 
-* 'Stadtgruenraster': Raster dataset from Krüger et al. (2022) including amongst others high vegetation (trees). Three land cover types were chosen from this raster dataset to include into the climate regulation model: broad-leaved tree, coniferous tree, built-up areas mixed with vegetation. Time period used in the model: 2018
+* 'Stadtgruenraster': Raster dataset from Krüger et al. (2021) including amongst others high vegetation (trees). Three land cover types were chosen from this raster dataset to include into the climate regulation model: broad-leaved tree, coniferous tree, built-up areas mixed with vegetation. Time period used in the model: 2018
 
-* 'Street_Tree': Vector dataset from Copernicus (Urban Atlas - Street Tree layer). Time period used in the model: 2018, Release 2021 (not validated).
+* 'Street_Tree': Vector dataset from Copernicus (2021) (Urban Atlas - Street Tree layer). Time period used in the model: 2018, Release 2021 (not validated).
 
 * vg25_GEM_Selektion_Stadt': Cities with more than 50,000 inhabitants. Taken from VG25, Federal Agency of Cartography and Geodesy.
 
@@ -56,7 +57,15 @@ Syrbe et al. (2022): Vorschlag für einen Klimaregulationsindikator [Suggestion 
 
 LINK TO RESOURCES AND LITERATURE
 
+BKG (2018): 
+
+Copernicus (2021): 
+
+Destatis (2016): 
+
 Jaganmohan M, Knapp S, Buchmann CM, Schwarz N. The Bigger, the Better? The Influence of Urban Green Space Design on Cooling Effects for Residential Areas. J Environ Qual. 2016 Jan;45(1):134-45. doi: 10.2134/jeq2015.01.0062. PMID: 26828169.
+
+Krüger et al. (2021): 
 
 Zardo, L., Geneletti, D., Pérez-Soba, M. und van Eupen, M. (2017): Estimating the cooling capacity of green infrastructures to support urban planning. Ecosystem Services (26), 225-235.
 
