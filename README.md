@@ -23,10 +23,6 @@ Street_Tree: Vector dataset from Copernicus (Street Tree layer). Time period use
 
 vg25_GEM_Selektion_Stadt': Cities with more than 50,000 inhabitants. Taken from VG25, Federal Agency of Cartography and Geodesy.
 
-'lyr': Layer created from 'vg25_GEM_Selektion_Stadt' 
-Urban_Functional_Areas = 
-
-
 
 
 * (shortly describe) The statistic/ modelling adopted is...
