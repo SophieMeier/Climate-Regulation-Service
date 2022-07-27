@@ -35,16 +35,15 @@ Jahr = "_2018"
 Eingangsdaten_gdb = "E:/Meier/Stadtklima/Eingangsdaten.gdb"   
 output_gdb_1 = "E:/Meier/Stadtklima/output_1" + Jahr + ".gdb" # output for ...
 output_gdb_2 = "E:/Meier/Stadtklima/output_2" + Jahr + ".gdb" # output for ...
-output_gdb_3 = "E:/Meier/Stadtklima/output_3" + Jahr + ".gdb"
+output_gdb_3 = "E:/Meier/Stadtklima/output_3" + Jahr + ".gdb" # output for ...
 
-# DATA SETS # DATENSÄTZE
+# DATA SETS - find description in ReadMe # DATENSÄTZE - Beschreibung im ReadMe
 # Please replace by own paths # Bitte eigenen Pfad angeben
 lbm_DE = "D:/tarox1_user5/OESL_P644_671/LBM/oriG/lbm_de_2018.gdb/lbm_de_2018_v2"
 Einwohnergrid = "D:/tarox1_user5/OESL_P644_671/Einwohnerzahlen/zensus2011.gdb/grid_r100_zensus11ew"
 Stadtgruenraster = "D:/tarox1_user5/OESL_P644_671/Stadtklima/Sentinel_II.gdb/s2_2018_lcc_classes_1_8_atkismod"
 Street_Tree = "D:/tarox1_user5/OESL_P644_671/Urban_Atlas/Street_Tree_Layer_2018.gdb/UA_STL_2018"
 Urban_Functional_Areas = "D:/tarox1_user5/OESL_P644_671/Urban_Atlas/Street_Tree_Layer_2018.gdb/UA_Boundary_STL_2018"
-# Cities with more than 50,000 inhabitants #  Städte ab 50.000 Einwohner
 vg25_GEM_Selektion_Stadt = "D:/tarox1_user5/OESL_P644_671/VG_ATKIS/VG_25/stadte_50000_ew.gdb/VG25_2016_join_50000EW"    
 
 # PROCESSING STEPS # PROZESSIERUNGSSCHRITTE
@@ -103,9 +102,8 @@ print("LBM-DE in 10x10m Raster umwandeln")
 lbm_Stadt_ID_rast = output_gdb_1 + "\\lbm_stadt_rast"
 arcpy.PolygonToRaster_conversion(lbm_Stadt_sing, "ID", lbm_Stadt_ID_rast, "MAXIMUM_COMBINED_AREA", "", 10)
 
-# ERMITTELN WIEVIELE RASTERZELLEN DER KLASSE 3 (LAUBBAUM), 4 (NADELBAUM), 9 (Street Tree Layer) UND 8 (BEBAUT - STARK DURCHGRÜNT) JEWEILS IN WELCHER LBM-DE FLÄCHE LIEGEN UND...
-# ... DIE FLÄCHENGRÖSSE BERECHNEN
-# DIE ERGEBNISDATEI IST EINE TABELLE
+# ERMITTELN WIEVIELE RASTERZELLEN DER KLASSE 3 (LAUBBAUM), 4 (NADELBAUM), 9 (Street Tree Layer) UND 8 (BEBAUT - STARK DURCHGRÜNT) 
+# JEWEILS IN WELCHER LBM-DE FLÄCHE LIEGEN UND DIE FLÄCHENGRÖSSE BERECHNEN - DIE ERGEBNISDATEI IST EINE TABELLE
 print("Ermitteln wieviele Rasterzellen an Bäumen und bebaut-stark durchgrünt in welcher LBM-DE-Fläche vorkommen")
 tabl_kl_3_4_8_9 = output_gdb_1 + "\\tab_Stadtgruenrast_3_4_8_9"
 TabulateArea(lbm_Stadt_ID_rast, "Value", path_Stadtgruen_Streettree, "Value", tabl_kl_3_4_8_9, "10", "CLASSES_AS_FIELDS")
@@ -125,8 +123,10 @@ else:
     arcpy.AddField_management(tabl_kl_3_4_8_9, "VALUE_4_Area", "DOUBLE", "","", "", "", "NULLABLE", "", "")
 arcpy.CalculateField_management(tabl_kl_3_4_8_9, "VALUE_4_Area", "!VALUE_4!", "PYTHON3")
 
-# ANALYSEN MIT GRÜNVOLUMENDATEN VON FÜNF STÄDTEN ZEIGTEN, DASS DIE KLASSE 8 (BEBAUT, STARK DURCHGRÜN) IM DURCHSCHNITT NUR 18 PROZENT BAUMBEDECKUNG BEINHALTET...
-# ...DAHER WIRD DIE FLÄCHENGRÖSSE (10x10m = 100m²) DER KLASSE 8 MIT 0,18 MULTIPLIZIERT
+# ANALYSEN MIT GRÜNVOLUMENDATEN VON FÜNF STÄDTEN ZEIGTEN, DASS DIE KLASSE 8 (BEBAUT, STARK DURCHGRÜN) IM DURCHSCHNITT NUR 18 PROZENT BAUMBEDECKUNG BEINHALTET
+# SIEHE SYRBE ET AL. (2022)
+# DAHER WIRD DIE FLÄCHENGRÖSSE (10x10m = 100m²) DER KLASSE 8 MIT 0,18 MULTIPLIZIERT
+
 # Flächengröße berechnen für Klasse 8 (Auf Basis der Rasterflächen)
 if len(arcpy.ListFields(tabl_kl_3_4_8_9, "VALUE_8_Area")) > 0:
     print("Feld schon vorhanden")
@@ -164,7 +164,8 @@ arcpy.conversion.FeatureClassToFeatureClass(lbm_Stadt_sing, output_gdb_2, "lbm_S
 
 print("Felder im ursprünglichen LBM-DE-Datensatz nach dem Join wieder bereinigen")
 FCfields = [f.name for f in arcpy.ListFields(lbm_Stadt_sing)]
-nicht_loeschen = ['AREA', 'Baumbed_Area', 'BD', 'ID', 'CLC_num', 'CLC_st1', 'Cellcode50000', 'CellCode', 'FID_grid_50000_complete', 'SHAPE_Leng', 'CLC18', 'METHOD_AKT', 'LBMDE_ID', 'ZUS_AKT', 'VEG_AKT', 'SIE_AKT', 'LN_AKT','LB_AKT', 'LAND', 'Shape_Length', 'Shape_Area', 'Shape', 'OBJECTID_1']
+nicht_loeschen = ['AREA', 'Baumbed_Area', 'BD', 'ID', 'CLC_num', 'CLC_st1', 'Cellcode50000', 'CellCode', 'FID_grid_50000_complete', 'SHAPE_Leng', 
+                  'CLC18', 'METHOD_AKT', 'LBMDE_ID', 'ZUS_AKT', 'VEG_AKT', 'SIE_AKT', 'LN_AKT','LB_AKT', 'LAND', 'Shape_Length', 'Shape_Area', 'Shape', 'OBJECTID_1']
 Felder_loeschen = list(set(FCfields) - set(nicht_loeschen))
 arcpy.DeleteField_management(lbm_Stadt_sing, Felder_loeschen)
 
@@ -186,8 +187,9 @@ if len(arcpy.ListFields(lbm_Stadt_Baumbed, "Baumbed_Klasse")) > 0:
 else:
     arcpy.AddField_management(lbm_Stadt_Baumbed, "Baumbed_Klasse", "LONG", "","", "", "", "NULLABLE", "", "")
 
-# Baumanteilswerten zwischen >=80 und 100 (und darüber hinaus, Werte über 100 entstehen durch grobe Rasterauflösung des Stadtgrünrasters), werden die Klasse "100" zugewiesen
-# Anteilswerten zwischen 60 und 80 werden die Klasse "80" zugewiesen
+# Baumanteilswerten zwischen >=80 und 100 (und darüber hinaus, Werte über 100 entstehen durch grobe Rasterauflösung des Stadtgrünrasters), 
+# werden der Klasse "100" zugewiesen
+# Anteilswerten zwischen 60 und 80 werden der Klasse "80" zugewiesen
 
 # 20: bis 20 Prozent
 # 40: bis 40 Prozent
@@ -227,7 +229,8 @@ arcpy.CalculateField_management(lbm_Stadt_Baumbed, "Baumbed_Klasse", expression,
 # ERMITTLUNG DER FLÄCHENGRÖSSE ÜBER 2 HEKTAR / UNTER 2 HEKTAR
 # Dies wird nur für unversiegelte Flächen gemacht (Offener Boden, heterogen, Wasser, Gras, Wald)  ---> soll hier "heterogen" wirklich mit reingenommen werden?
 
-# 1) dissolven aller benachbarter Flächen, die nicht versiegelt sind, daraus eine Flächengröße ermitteln und zuweisen, ob diese dissolvte Fläche unter 2 ha (Wert 0) und über 2 ha (Wert 1) groß ist
+# 1) dissolven aller benachbarter Flächen, die nicht versiegelt sind, daraus eine Flächengröße ermitteln und zuweisen, ob diese dissolvte Fläche unter 2 ha (Wert 0) 
+# und über 2 ha (Wert 1) groß ist
 # 2) anschließend die Information über die (dissolvte)  Flächengröße (0,1) den einzelnen (undissolvten Flächen) als neue Spalte anhängen (Spalte unter 2ha/über2ha)
 # 3) anschließend über die Spalte unter 2ha/über2ha und  die Spalte des Baumanteils der einzelnen Flächen den CCA-Wert zuweisen über Funktion "UpdateCursor"
 
@@ -533,10 +536,12 @@ arcpy.management.JoinField(vg_25_sel_Stadt_UA, "GEN", tab_CCA_gew_Area, "GEN")
 CCA_gew_Area_vg25_GEM_Selektion_Stadt = output_gdb_3 + "\\CCA_gew_Area_vg25_GEM"
 arcpy.CopyFeatures_management(vg_25_sel_Stadt_UA, CCA_gew_Area_vg25_GEM_Selektion_Stadt)
 
-# ANGEHÄNGTE FELDER WERDEN IM DATENSATZ VG_25_sel_Stadt_UA WIEDER ENTFERNT, DAMIT NICHT BEI JEDEM DURCHGANG DES SKRIPTES MEHR UND MEHR ZUSÄTZLICHE SPALTEN ANGEHÄNGT WERDEN
+# ANGEHÄNGTE FELDER WERDEN IM DATENSATZ VG_25_sel_Stadt_UA WIEDER ENTFERNT, DAMIT NICHT BEI JEDEM DURCHGANG DES SKRIPTES 
+# MEHR UND MEHR ZUSÄTZLICHE SPALTEN ANGEHÄNGT WERDEN
 print("angehängte Felder im ursprünglichen VG_25_sel_Stadt_UA-Datensatz wieder löschen")
 FCfields = [f.name for f in arcpy.ListFields(vg_25_sel_Stadt_UA)]
-nicht_loeschen = ['ADE', 'GF', 'BSG', 'RS', 'AGS', 'SDV_RS', 'GEN', 'BEZ', 'IBZ', 'BEM', 'NBD', 'SN_L', 'SN_R', 'SN_K', 'SN_V1', 'SN_V2', 'SN_G','FK_S3', 'NUTS', 'RS_0', 'AGS_0', 'WSK', 'Shape_Length', 'Shape_Area', 'Shape', 'OBJECTID_1']
+nicht_loeschen = ['ADE', 'GF', 'BSG', 'RS', 'AGS', 'SDV_RS', 'GEN', 'BEZ', 'IBZ', 'BEM', 'NBD', 'SN_L', 'SN_R', 'SN_K', 'SN_V1', 'SN_V2', 'SN_G',
+                  'FK_S3', 'NUTS', 'RS_0', 'AGS_0', 'WSK', 'Shape_Length', 'Shape_Area', 'Shape', 'OBJECTID_1']
 Felder_loeschen = list(set(FCfields) - set(nicht_loeschen))
 arcpy.DeleteField_management(vg_25_sel_Stadt_UA, Felder_loeschen)
 
@@ -623,7 +628,8 @@ else:
 # FELD "SUM_EW_kor_1": SUMME DER EINWOHNER INSGESAMT IN DER STADT
 arcpy.CalculateField_management(tab_EW_CCA_AGS, "EW_Ant_CCA", "(!SUM_EW_kor!/!SUM_EW_kor_1!)*100", "PYTHON3")
 
-# Selektion der Einwohner, die sich in gut bis sehr gut gekühlten Gebieten aufhalten (entpricht Klasse 80 und Klasse 100, das sind die Kühlkapazitätswerte von 61 bis 100)
+# Selektion der Einwohner, die sich in gut bis sehr gut gekühlten Gebieten aufhalten (entpricht Klasse 80 und Klasse 100, 
+# das sind die Kühlkapazitätswerte von 61 bis 100)
 print("nur die Flächen selektieren, denen eine Kühlkapazitäts-Klasse von 61 - 100 zugewiesen wurde (entspricht gut bis sehr gut gekühlten Flächen)")
 tab_EW_Ant_CCA_AGS_CCA_80_und_mehr = output_gdb_3 + "\\tab_EW_Ant_AGS_CCA_80_und_mehr"
 arcpy.analysis.TableSelect(tab_EW_CCA_AGS, tab_EW_Ant_CCA_AGS_CCA_80_und_mehr, "CCA_Klasse >= 80")
@@ -639,10 +645,12 @@ arcpy.management.JoinField(vg_25_sel_Stadt_UA, "GEN", tab_EW_CCA_80_und_mehr, "G
 CCA_80_u_mehr_Ant_EW_vg25_GEM_Selektion_Stadt = output_gdb_3 + "\\CCA_80_u_mehr_Ant_EW_vg25_GEM"
 arcpy.CopyFeatures_management(vg_25_sel_Stadt_UA, CCA_80_u_mehr_Ant_EW_vg25_GEM_Selektion_Stadt)
 
-# ANGEHÄNGTE FELDER WERDEN IM DATENSATZ VG_25_sel_Stadt_UA WIEDER ENTFERNT, DAMIT NICHT BEI JEDEM DURCHGANG DES SKRIPTES MEHR UND MEHR ZUSÄTZLICHE SPALTEN ANGEHÄNGT WERDEN
+# ANGEHÄNGTE FELDER WERDEN IM DATENSATZ VG_25_sel_Stadt_UA WIEDER ENTFERNT, DAMIT NICHT BEI JEDEM DURCHGANG DES SKRIPTES 
+# MEHR UND MEHR ZUSÄTZLICHE SPALTEN ANGEHÄNGT WERDEN
 print("angehängte Felder im ursprünglichen VG_25_sel_Stadt_UA-Datensatz wieder löschen")
 FCfields = [f.name for f in arcpy.ListFields(vg_25_sel_Stadt_UA)]
-nicht_loeschen = ['ADE', 'GF', 'BSG', 'RS', 'AGS', 'SDV_RS', 'GEN', 'BEZ', 'IBZ', 'BEM', 'NBD', 'SN_L', 'SN_R', 'SN_K', 'SN_V1', 'SN_V2', 'SN_G','FK_S3', 'NUTS', 'RS_0', 'AGS_0', 'WSK', 'Shape_Length', 'Shape_Area', 'Shape', 'OBJECTID_1']
+nicht_loeschen = ['ADE', 'GF', 'BSG', 'RS', 'AGS', 'SDV_RS', 'GEN', 'BEZ', 'IBZ', 'BEM', 'NBD', 'SN_L', 'SN_R', 'SN_K', 'SN_V1', 'SN_V2', 'SN_G',
+                  'FK_S3', 'NUTS', 'RS_0', 'AGS_0', 'WSK', 'Shape_Length', 'Shape_Area', 'Shape', 'OBJECTID_1']
 Felder_loeschen = list(set(FCfields) - set(nicht_loeschen))
 arcpy.DeleteField_management(vg_25_sel_Stadt_UA, Felder_loeschen)
 
