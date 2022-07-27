@@ -1,5 +1,5 @@
 
-# CLIMATE REGULATION INDICATOR FOR CITIES (EXAMPLE GERMANY)
+# CLIMATE REGULATION INDICATOR FOR CITIES 
 
 Literature:
 Syrbe et al. (2022): Vorschlag für einen Klimaregulationsindikator [Suggestion for a climate regulation indicator]. Naturschutz und Landschaftsplanung.
