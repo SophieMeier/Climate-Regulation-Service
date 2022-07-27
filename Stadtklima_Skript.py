@@ -5,10 +5,7 @@
 
 # INDIKATOR STADTKLIMA-REGULATION
 
-# LITERATUR:
-# Syrbe et al. (2022): Ein 
-# Modell nach: "Climate Cooling Assessment (CCA) von Zardo, L., Geneletti, D., Pérez-Soba, M. und van Eupen, M. (2017): 
-# Estimating the cooling capacity of green infrastructures to support urban planning. In: Ecosystem Services (26), 225-235."
+
 
 
 # KURZBESCHREIBUNG DES INDIKATORS
@@ -30,10 +27,10 @@ arcpy.env.extent = "MAXOF"
 # JAHR - ZEITSCHNITT
 Jahr = "_2018"
 
-# Geodatabases
-Eingangsdaten_gdb = "E:/Meier/Stadtklima/Eingangsdaten.gdb"
-output_gdb_1 = "E:/Meier/Stadtklima/output_1" + Jahr + ".gdb"
-output_gdb_2 = "E:/Meier/Stadtklima/output_2" + Jahr + ".gdb"
+# Geodatabases # Replace by own paths #
+Eingangsdaten_gdb = "E:/Meier/Stadtklima/Eingangsdaten.gdb"  
+output_gdb_1 = "E:/Meier/Stadtklima/output_1" + Jahr + ".gdb" # output for ...
+output_gdb_2 = "E:/Meier/Stadtklima/output_2" + Jahr + ".gdb" # output for ...
 output_gdb_3 = "E:/Meier/Stadtklima/output_3" + Jahr + ".gdb"
 
 # Datensätze
@@ -58,10 +55,8 @@ Urban_Functional_Areas = "D:/tarox1_user5/OESL_P644_671/Urban_Atlas/Street_Tree_
 # ÜBER SELECT BY LOCATION
     # die Clip-Funktion würde in diesem Schritt nicht funktionieren, da man sonst kleine Splitter von VG25-Gemeinden mit selektieren würde, die eigentlich nicht
     # im Urban Atlas erfasst worden sind, aber teilweise in die Urban Functional Areas hineinragen. Daher wurde die Funktion "Select by location" genommen
-
-
-# Street Tree Layer rastern - dann als neue Kategorie 9 einführen
-# Priorität für Stadtgrünmonitoring-Raster ist immer hoeher
+    # Street Tree Layer rastern - dann als neue Kategorie 9 einführen
+    # Priorität für Stadtgrünmonitoring-Raster ist immer hoeher
 
 print("Streettree-Layer in 10x10m Raster umwandeln und als Kategorie 9 in Stadtgrünraster einfügen")
 print("Feld für  Kategorie 9 erstellen")
