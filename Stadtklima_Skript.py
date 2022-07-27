@@ -44,16 +44,169 @@ Einwohnergrid = "D:/tarox1_user5/OESL_P644_671/Einwohnerzahlen/zensus2011.gdb/gr
 Stadtgruenraster = "D:/tarox1_user5/OESL_P644_671/Stadtklima/Sentinel_II.gdb/s2_2018_lcc_classes_1_8_atkismod"
 Street_Tree = "D:/tarox1_user5/OESL_P644_671/Urban_Atlas/Street_Tree_Layer_2018.gdb/UA_STL_2018"
 Urban_Functional_Areas = "D:/tarox1_user5/OESL_P644_671/Urban_Atlas/Street_Tree_Layer_2018.gdb/UA_Boundary_STL_2018"
+lyr = Eingangsdaten_gdb + "\\VG25_2016_join_50000EW.lyr"
 vg25_GEM_Selektion_Stadt = "D:/tarox1_user5/OESL_P644_671/VG_ATKIS/VG_25/stadte_50000_ew.gdb/VG25_2016_join_50000EW"    
 
 # PROCESSING STEPS # PROZESSIERUNGSSCHRITTE
 
+# SELECT CITIES WITH A POPULATION OF 50,000 OR MORE (FROM VG25) WITHIN THE URBAN ATLAS FUNCTIONAL AREAS
+# VIA SELECT BY LOCATION
+    # the clip function would not work in this step, because otherwise you would select small splinters of VG25 municipalities, which were not actually
+    # been included in the Urban Atlas, but partially extend into the Urban Functional Areas. Therefore the function "Select by location" was taken.
 # STÄDTE AB 50.000 EINWOHNERN (AUS VG25) INNERHALB DER URBAN ATLAS FUNCTIONAL AREAS SELEKTIEREN
 # ÜBER SELECT BY LOCATION
     # die Clip-Funktion würde in diesem Schritt nicht funktionieren, da man sonst kleine Splitter von VG25-Gemeinden mit selektieren würde, die eigentlich nicht
     # im Urban Atlas erfasst worden sind, aber teilweise in die Urban Functional Areas hineinragen. Daher wurde die Funktion "Select by location" genommen
-    # Street Tree Layer rastern - dann als neue Kategorie 9 einführen
-    # Priorität für Stadtgrünmonitoring-Raster ist immer hoeher
+
+print("Select cities within the Urban Atlas / Städte innerhalb des Urban Atlas auswählen")
+lyr = Eingangsdaten_gdb + "\\lyr"
+arcpy.MakeFeatureLayer_management(vg25_GEM_Selektion_Stadt, lyr)
+arcpy.SelectLayerByLocation_management(lyr, 'HAVE_THEIR_CENTER_IN', Urban_Functional_Areas, "", "NEW_SELECTION", "")
+vg_25_sel_Stadt_SEL = Eingangsdaten_gdb + "\\vg_25_sel_Stadt_SEL"
+arcpy.CopyFeatures_management(lyr, vg_25_sel_Stadt_SEL)
+
+
+# IN SOME CASES, THE VG25 COMMUNITIES ARE LARGER THAN THE URBAN-FUNCTIONAL AREAS, THEREFORE THE VG25 GEOMETRIES ARE
+# OUTSIDE THE URBAN-FUNCTIONAL-AREAS ARE REMOVED
+# TEILWEISE SIND DIE VG25-GEMEINDEN GRÖSSER ALS DIE URBAN-FUNCTIONAL AREAS, DESWEGEN WERDEN DIE VG25-GEOMETRIEN
+# AUSSERHALB DER URBAN-FUNCTIONAL-AREAS ENTFERNT
+
+vg_25_sel_Stadt_UA = Eingangsdaten_gdb + "\\vg_25_sel_Stadt_UA"
+arcpy.analysis.Clip(vg_25_sel_Stadt_SEL, Urban_Functional_Areas, vg_25_sel_Stadt_UA)
+
+print("Select LBM-DE within the urban geometries (common area of VG25 and Urban Functional Areas)")
+print ("LBM-DE innerhalb der Stadtgeometrien (gemeinsame Fläche von VG25 und Urban Functional Areas) selektieren")
+# LBM-DE ZURECHTSCHNEIDEN AUF DIE NEU ERSTELLTE GEOMETRIE ZU STÄDTEN AB 50.000 EINWOHNER (VG25) INNERHALB DER URBAN FUNCTIONAL AREAS
+lbm_Stadt_alt = Eingangsdaten_gdb + "\\lbm_Stadt_alt" + Jahr
+arcpy.analysis.Clip(lbm_DE, vg_25_sel_Stadt_UA, lbm_Stadt_alt)
+
+lbm_Stadt_alt_sing = Eingangsdaten_gdb + "\\lbm_Stadt_alt_sing" + Jahr
+arcpy.management.MultipartToSinglepart(lbm_Stadt_alt, lbm_Stadt_alt_sing)
+
+lbm_Stadt = Eingangsdaten_gdb + "\\lbm_Stadt" + Jahr
+lbm_Stadt_lyr = Eingangsdaten_gdb + "\\lbm_Stadt_lyr" + Jahr
+arcpy.MakeFeatureLayer_management(lbm_Stadt_alt_sing, lbm_Stadt_lyr)
+arcpy.SelectLayerByAttribute_management(lbm_Stadt_lyr, "NEW_SELECTION",'"Shape_Area" < 100')
+arcpy.Eliminate_management(lbm_Stadt_lyr, lbm_Stadt, "AREA", '"Shape_Area" > 100')
+
+lbm_Stadt_sing = Eingangsdaten_gdb + "\\lbm_Stadt_sing" + Jahr
+arcpy.management.MultipartToSinglepart(lbm_Stadt, lbm_Stadt_sing)
+
+# LAND COVER TYPE AFTER ZARDO ET AL. 2017 AND SYRBE ET AL. 2022/ BODENBEDECKUNGSTYP NACH ZARDO ET AL. 2017 UND SYRBE ET AL. 2022
+# Abrevations for the land cover types / Abkürzungen für die Bodenbedeckungstypen:
+     # V: sealed/versiegelt
+     # O: open soil / offener Boden
+     # H: heterogeneous / heterogen
+     # WS: water surface / Wasser
+     # G: grass / Gras
+     # WL: forest / Wald
+
+print("Create field for land cover 'BD' and assign CLC classes in LBM-DE to land cover types")
+print("Feld für Bodenbedeckung 'BD' anlegen und CLC-Klassen im LBM-DE den Bodenbedeckungstypen zuweisen")
+    if len(arcpy.ListFields(lbm_Stadt_sing, "BD")) > 0:
+        print("Field already exists / Feld schon vorhanden")
+else:
+    arcpy.AddField_management(lbm_Stadt_sing, "BD", "TEXT", "","", "", "", "NULLABLE", "", "")
+
+with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
+    for rowCLC in cursorCLC:
+        if rowCLC[0] == '111':        # durchgängig städtische Prägung
+            rowCLC[1] = 'V'           # sealed / Versiegelt
+        elif rowCLC[0] == '112':      # Nicht durchgängig städtische Prägung
+            rowCLC[1] = 'H'           # heterogeneous / heterogen
+        elif rowCLC[0] == '121':      # Industrie- und Gewerbefläche
+            rowCLC[1] = 'V'
+        elif rowCLC[0] == '122':      # Straßen- und Eisenbahnnetze
+            rowCLC[1] = 'V'
+        elif rowCLC[0] == '123':      # Hafengebiete
+            rowCLC[1] = 'V'
+        elif rowCLC[0] == '124':      # Flughafen
+            rowCLC[1] = 'V'
+        elif rowCLC[0] == '131':      # Abbauflächen
+            rowCLC[1] = 'O'           # open soil / offener Boden
+        elif rowCLC[0] == '132':      # Deponien und Abraumhalden
+            rowCLC[1] = 'H'
+        elif rowCLC[0] == '133':      # Baustellen
+            rowCLC[1] = 'H'
+        elif rowCLC[0] == '141':      # Städtische Grünflächen
+            rowCLC[1] = 'G'           # grass / Gras
+        elif rowCLC[0] == '142':      # Sport- und Freizeitanlagen
+            rowCLC[1] = 'H'
+        elif rowCLC[0] == '211':      # nicht bewässertes Ackerland
+            rowCLC[1] = 'O'
+        elif rowCLC[0] == '221':      # Weinbauflächen
+            rowCLC[1] = 'G'
+        elif rowCLC[0] == '222':      # Obst- und Beerenobstbestände
+            rowCLC[1] = 'G'
+        elif rowCLC[0] == '231':      # Wiesen und Weiden
+            rowCLC[1] = 'G'
+        elif rowCLC[0] == '311':      # Laubwälder
+            rowCLC[1] = 'WL'          # forest / Wald
+        elif rowCLC[0] == '312':      # Nadelwälder
+            rowCLC[1] = 'WL'
+        elif rowCLC[0] == '313':      # Mischwälder
+            rowCLC[1] = 'WL'
+        elif rowCLC[0] == '321':      # Natürliches Grünland
+            rowCLC[1] = 'G'
+        elif rowCLC[0] == '322':      # Heiden und Moorheiden
+            rowCLC[1] = 'G'
+        elif rowCLC[0] == '324':      # Wald-Strauch-Übergangsstadien
+            rowCLC[1] = 'G'
+        elif rowCLC[0] == '331':      # Strände, Dünen und Sandflächen
+            rowCLC[1] = 'O'
+        elif rowCLC[0] == '332':      # Felsflächen ohne Vegetation
+            rowCLC[1] = 'O'
+        elif rowCLC[0] == '333':      # Flächen mit spärlicher Vegetation
+            rowCLC[1] = 'O'
+        elif rowCLC[0] == '334':      # Brandflächen
+            rowCLC[1] = 'O'
+        elif rowCLC[0] == '335':      # Gletscher und Dauerschneegebiete (nicht in den ausgewählten Stadtgebieten vorzufinden)
+            rowCLC[1] = 'WS'          # water surface / Wasser
+        elif rowCLC[0] == '411':      # Sümpfe
+            rowCLC[1] = 'WS'
+        elif rowCLC[0] == '412':      # Torfmoore
+            rowCLC[1] = 'WS'
+        elif rowCLC[0] == '421':      # Salzwiesen
+            rowCLC[1] = 'WS'
+        elif rowCLC[0] == '423':      # Watt
+            rowCLC[1] = 'WS'
+        elif rowCLC[0] == '511':      # Gewässerläufe
+            rowCLC[1] = 'WS'
+        elif rowCLC[0] == '512':      # Wasserflächen
+            rowCLC[1] = 'WS'
+        elif rowCLC[0] == '521':      # Lagunen
+            rowCLC[1] = 'WS'
+        elif rowCLC[0] == '522':      # Mündungsgebiete
+            rowCLC[1] = 'WS'
+        elif rowCLC[0] == '523':      # Meere und Ozeane
+            rowCLC[1] = 'WS'
+
+        cursorCLC.updateRow(rowCLC)
+    del rowCLC, cursorCLC
+
+# DETERMINATION OF THE PROPORTION OF TREES IN EACH CLC CLASS IN LBM-DE - FOR THIS PURPOSE, INFORMATION ON TREES FROM THE
+# URBAN GREEN MONITORING RASTER DATASET WAS USED.
+# CLASSES OF THE URBAN GREEN MONITORING RASTER DATASET:
+     # 1: Built-up
+     # 2: Open ground
+     # 3: Hardwood
+     # 4: Coniferous
+     # 5: Arable land (low seasonal vegetation)
+     # 6: Meadow (low seasonal vegetation)
+     # 7: Water
+     # 8: Built-up, heavily vegetated
+# ERMITLUNG DES BAUMANTEILS JEDER CLC-KLASSE IM LBM-DE - HIERZU WURDEN INFORMATIONEN ZU BÄUMEN AUS DEM
+# STADTGRÜNMONITORING-RASTERDATENSATZ VERWENDET
+# KLASSEN DES STADTGRÜNMONITORING-RASTERDATENSATZES:
+     # 1: Bebaut
+     # 2: Offener Boden
+     # 3: Laubholz
+     # 4: Nadelholz
+     # 5: Ackerland (niedrige saisonale Vegetation)
+     # 6: Wiese (niedrige ganzjährige Vegetation)
+     # 7: Wasser
+     # 8: Bebaut, stark durchgrünt
+
 
 print("Streettree-Layer in 10x10m Raster umwandeln und als Kategorie 9 in Stadtgrünraster einfügen")
 print("Feld für  Kategorie 9 erstellen")
@@ -227,7 +380,7 @@ arcpy.CalculateField_management(lbm_Stadt_Baumbed, "Baumbed_Klasse", expression,
 # EVENTUELL KÖNNTE MAN DEN BERECHNETEN BAUMBEDECKUNGSANTEIL MIT DER MITGELIEFERTEN SPALTE ZUM VEGETATIONSANTEIL IM LBM-DE NOCHMAL ABGLEICHEN
 
 # ERMITTLUNG DER FLÄCHENGRÖSSE ÜBER 2 HEKTAR / UNTER 2 HEKTAR
-# Dies wird nur für unversiegelte Flächen gemacht (Offener Boden, heterogen, Wasser, Gras, Wald)  ---> soll hier "heterogen" wirklich mit reingenommen werden?
+# Dies wird nur für unversiegelte Flächen gemacht (Offener Boden, heterogen, Wasser, Gras, Wald) 
 
 # 1) dissolven aller benachbarter Flächen, die nicht versiegelt sind, daraus eine Flächengröße ermitteln und zuweisen, ob diese dissolvte Fläche unter 2 ha (Wert 0) 
 # und über 2 ha (Wert 1) groß ist
