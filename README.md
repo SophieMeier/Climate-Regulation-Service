@@ -51,6 +51,7 @@ The output datasets area:
 
 
 ARTICLE ASSOCIATED WITH THIS MODEL:
+
 Syrbe et al. (2022): Vorschlag für einen Klimaregulationsindikator [Suggestion for a climate regulation indicator]. Naturschutz und Landschaftsplanung.
 
 LINK TO RESOURCES AND LITERATURE
