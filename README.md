@@ -1,7 +1,7 @@
 
 # CLIMATE REGULATION INDICATOR FOR CITIES 
 
-Python script to calculate the cooling capacity of cities for the atlantic zone. The case study used in the original work (Syrbe et al. 2022) are German cities with more than 50,000 inhabitants within the functional urban areas (Urban Atlas, Copernicus). It is easily possible to adapt the model to mediterranean and continental climates when using the proposed values from Zardo et al. (2017). 
+This Python script allows to calculate the cooling capacity of cities for the atlantic zone. The case study used in the original work (Syrbe et al. 2022) are German cities with more than 50,000 inhabitants within the functional urban areas (Urban Atlas, Copernicus). It is easily possible to adapt the model to mediterranean and continental climates when using the proposed values from Zardo et al. (2017). 
 
 SHORT DESCRIPTION OF THE INDICATOR
 
@@ -39,12 +39,13 @@ MODELLING PROCESS
 
 Land use and land cover types get assigned specific climate cooling capacities regarding the tree cover, soil property, and area size. 
 Land cover and land use information are taken from the land cover model Germany (lbm-de), information on tree cover was derived from 'Stadtgruenraster' and the 'Street-Tree" dataset. For areas with a high cooling capacity (above 80) and a area larger than 2 ha, cooling distance of 100 m was estimated in the case study of Germany (based on Jaganmohan et al. 2016). 
+
 The users are invited to check carfully, if they need to adapt the cooling capacity values, cooling distances and area size thresholds according to the climate and city structure in their specific datasets. 
 
 OUTPUT DATASETS
 
 The output datasets area: 
-* a dataset with the climate cooling capacity for each polygon
+* a dataset with the climate cooling capacity for each land use/land cover area (each polygon)
 * a dataset with the mean climate cooling capacity of each city
 * a dataset with the percentage of inhabitants living in areas that show a good - very good cooling capacity (cooling capacity more than 60)
 
