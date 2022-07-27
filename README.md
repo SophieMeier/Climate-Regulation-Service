@@ -36,6 +36,8 @@ This raster file needs to be converted to vector format by two steps in ArcGIS: 
 
 vg25_GEM_Selektion_Stadt': Cities with more than 50,000 inhabitants. Taken from VG25, Federal Agency of Cartography and Geodesy.
 
+'Urban_functional_areas': 
+
 MODELLING PROCESS
 
 Land use and land cover types get assigned specific climate cooling capacities regarding the tree cover, soil property, and area size. 
@@ -48,7 +50,7 @@ OUTPUT DATASETS
 * (shortly describe) The output produced are...
 
 
-LINK TO RESOURCES
+LINK TO RESOURCES AND LITERATURE
 
 Jaganmohan M, Knapp S, Buchmann CM, Schwarz N. The Bigger, the Better? The Influence of Urban Green Space Design on Cooling Effects for Residential Areas. J Environ Qual. 2016 Jan;45(1):134-45. doi: 10.2134/jeq2015.01.0062. PMID: 26828169.
 
