@@ -49,7 +49,6 @@ Street_Tree = "D:/tarox1_user5/OESL_P644_671/Urban_Atlas/Street_Tree_Layer_2018.
 
 # Cities with more than 50,000 inhabitants #  Städte ab 50.000 Einwohner
 vg25_GEM_Selektion_Stadt = "D:/tarox1_user5/OESL_P644_671/VG_ATKIS/VG_25/stadte_50000_ew.gdb/VG25_2016_join_50000EW"    
-lyr = Eingangsdaten_gdb + "\\VG25_2016_join_50000EW.lyr"
 Urban_Functional_Areas = "D:/tarox1_user5/OESL_P644_671/Urban_Atlas/Street_Tree_Layer_2018.gdb/UA_Boundary_STL_2018"
 
 
