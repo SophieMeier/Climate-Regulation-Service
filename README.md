@@ -1,5 +1,5 @@
 
-# CLIMATE REGULATION INDICATOR FOR CITIES 
+# INDICATOR TO ESTIMATE CLIMATE REGULATION SERVICE OF VEGETATION IN CITIES 
 
 This Python script allows to calculate the cooling capacity of cities for the atlantic zone. The case study used in the original work (Syrbe et al. 2022) are German cities with more than 50,000 inhabitants within the functional urban areas (Urban Atlas, Copernicus). It is easily possible to adapt the model to mediterranean and continental climates when using the proposed values from Zardo et al. (2017). 
 
@@ -34,7 +34,7 @@ Time period used in the model: 2011.
 
 * vg25_GEM_Selektion_Stadt': Cities with more than 50,000 inhabitants. Taken from VG25, Federal Agency of Cartography and Geodesy (BKG 2017).
 
-* 'Urban_Functional_Areas': Indicates those areas where Street Tree data from Urban Atlas (Copernicus) were available. Only cities (inhabitants > 50,000) were used in the model that fell in the urban functional areas. As a consequence, some cities, especially in the state of Baden-Württemberg and North-Rhine-Westfalia could not be considered in the modelling approach (Copernicus 2021).
+* 'Urban_Functional_Areas': Indicates those areas where Street Tree data from Urban Atlas (Copernicus) were available. Only cities (inhabitants > 50,000) were used in the model that fell in the urban functional areas. As a consequence, some cities, especially in the states of Baden-Württemberg and North Rhine Westfalia could not be considered in the modelling approach (Copernicus 2021).
 
 MODELLING PROCESS
 
