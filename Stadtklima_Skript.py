@@ -66,7 +66,7 @@ vg_25_sel_Stadt_SEL = Eingangsdaten_gdb + "\\vg_25_sel_Stadt_SEL"
 arcpy.CopyFeatures_management(lyr, vg_25_sel_Stadt_SEL)
 
 
-# IN SOME CASES, THE VG25 COMMUNITIES ARE LARGER THAN THE URBAN-FUNCTIONAL AREAS, THEREFORE THE VG25 GEOMETRIES ARE
+# IN SOME CASES, THE VG25 COMMUNITIES ARE LARGER THAN THE URBAN-FUNCTIONAL AREAS, THEREFORE THE VG25 GEOMETRIES WHICH ARE
 # OUTSIDE THE URBAN-FUNCTIONAL-AREAS ARE REMOVED
 # TEILWEISE SIND DIE VG25-GEMEINDEN GRÖSSER ALS DIE URBAN-FUNCTIONAL AREAS, DESWEGEN WERDEN DIE VG25-GEOMETRIEN
 # AUSSERHALB DER URBAN-FUNCTIONAL-AREAS ENTFERNT
@@ -92,8 +92,7 @@ arcpy.Eliminate_management(lbm_Stadt_lyr, lbm_Stadt, "AREA", '"Shape_Area" > 100
 lbm_Stadt_sing = Eingangsdaten_gdb + "\\lbm_Stadt_sing" + Jahr
 arcpy.management.MultipartToSinglepart(lbm_Stadt, lbm_Stadt_sing)
 
-# LAND COVER TYPE AFTER ZARDO ET AL. 2017 AND SYRBE ET AL. 2022/ BODENBEDECKUNGSTYP NACH ZARDO ET AL. 2017 UND SYRBE ET AL. 2022
-# Abrevations for the land cover types (BD) / Abkürzungen für die Bodenbedeckungstypen (BD):
+# LAND COVER TYPES (BD) (SEE ZARDO ET AL. 2017 AND SYRBE ET AL. 2022)/ BODENBEDECKUNGSTYP (BD) (SIEHE ZARDO ET AL. 2017 UND SYRBE ET AL. 2022):
      # V: sealed/versiegelt
      # O: open soil / offener Boden
      # H: heterogeneous / heterogen
@@ -184,9 +183,8 @@ with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
         cursorCLC.updateRow(rowCLC)
     del rowCLC, cursorCLC
 
-# DETERMINATION OF THE PROPORTION OF TREES IN EACH CLC CLASS IN LBM-DE - FOR THIS PURPOSE, INFORMATION ON TREES FROM THE
-# URBAN GREEN MONITORING RASTER DATASET WAS USED.
-# CLASSES OF THE URBAN GREEN MONITORING RASTER DATASET:
+# DETERMINATION OF THE PROPORTION OF TREES IN EACH CLC-CLASS IN LBM-DE - FOR THIS PURPOSE, INFORMATION ON TREES FROM THE
+# URBAN GREEN MONITORING RASTER DATASET WAS USED, WHICH HAS FOLLOWING CLASSES
      # 1: Built-up
      # 2: Open ground
      # 3: Hardwood
@@ -194,10 +192,10 @@ with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
      # 5: Arable land (low seasonal vegetation)
      # 6: Meadow (low seasonal vegetation)
      # 7: Water
-     # 8: Built-up, heavily vegetated
+     # 8: Built-up, but considerably vegetated
+        
 # ERMITLUNG DES BAUMANTEILS JEDER CLC-KLASSE IM LBM-DE - HIERZU WURDEN INFORMATIONEN ZU BÄUMEN AUS DEM
-# STADTGRÜNMONITORING-RASTERDATENSATZ VERWENDET
-# KLASSEN DES STADTGRÜNMONITORING-RASTERDATENSATZES:
+# STADTGRÜNMONITORING-RASTERDATENSATZ VERWENDET, DAS FOLGENDE KLASSEN ENTHÄLT
      # 1: Bebaut
      # 2: Offener Boden
      # 3: Laubholz
@@ -207,7 +205,10 @@ with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
      # 7: Wasser
      # 8: Bebaut, stark durchgrünt
 
-
+# COMBINE BOTH DATASETS WITH TREE COVER INFORMATION INTO ONE DATASET
+# BEIDE DATENSÄTZE MIT BAUMBEDECKUNGSINFORMATIONEN IN EINEN DATENSATZ VEREINIGEN
+        
+print("Convert Streettree layer to 10x10m grid and insert into urban green grid as category 9")
 print("Streettree-Layer in 10x10m Raster umwandeln und als Kategorie 9 in Stadtgrünraster einfügen")
 print("Feld für  Kategorie 9 erstellen")
 if len(arcpy.ListFields(Street_Tree, "Klasse")) > 0:
@@ -219,8 +220,8 @@ arcpy.CalculateField_management(Street_Tree, "Klasse", '9')
 Street_Tree_rast = output_gdb_1 + "\\Street_Tree_rast"
 arcpy.PolygonToRaster_conversion(Street_Tree, "Klasse", Street_Tree_rast, "MAXIMUM_COMBINED_AREA", "", 10)
 
-# AUS DEM STADTGRÜNMONITORING-RASTER DIE PIXEL EXTRAHIEREN WELCHE BAUM-INFORMATION ENTHALTEN: KLASSE 3: LAUBBAUM ,4: NADELBAUM)
-print("Reklassifikation des Stadtgrünmonitoring-Rasters")
+print("Extract pixels containing tree information from the urban green monitoring grid: Class 3 and 4")
+print("Aus dem Stadtgrünmonitoring-Raster die Pixel extrahieren, welche Baum-Informationen enthalten: Klasse 3 und 4")
 path_recl_Stadtgruen_3_4 = output_gdb_1 + "\\Stadtgruenrast_3_4"
 remap = RemapValue([[1, "NoData"], [2, "NoData"], [3, 3], [4, 4], [5, "NoData"], [6, "NoData"], [7, "NoData"], [8, "NoData"]])
 out_raster = Reclassify(Stadtgruenraster, "Value", remap, "NoData")
