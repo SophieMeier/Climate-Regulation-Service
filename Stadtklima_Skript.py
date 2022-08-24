@@ -231,12 +231,18 @@ remap = RemapValue([[1, "NODATA"], [2, "NODATA"], [3, "NODATA"], [4, "NODATA"], 
 out_raster = Reclassify(Stadtgruenraster, "Value", remap, "NODATA")
 out_raster.save(path_recl_Stadtgruen_8)
 
+print("Merge Street Tree Layer and Urban Green Raster")
 print("Street Tree Layer und Stadtgrünraster zusammenfügen")
 path_Stadtgruen_Streettree = output_gdb_2 + "\\Stadtgruenrast_3_4_8_9"
 mosaik_dataset = [path_recl_Stadtgruen_3_4, Street_Tree_rast, path_recl_Stadtgruen_8]
 arcpy.management.MosaicToNewRaster(mosaik_dataset, output_gdb_2, "Stadtgruenrast_3_4_8_9", "", "4_BIT", "10", "1", "FIRST", "")
 
-# ZIEL: RASTERUNG DES LBM-DES IN 10x10m RASTER (GLEICHE AUFLÖSUNG, WIE DAS STADTGRÜNRASTER)
+# DETERMINE HOW MANY GRADUATE CELLS OF CLASS 3 (BROAD-LEAF TREE), 4 (CONIFEROUS TREE), 9 (STREET TREE LAYER) AND 8 (BUILT-UP BUT CONSIDERABLY VEGETATED). 
+    # EACH IN WHICH LBM-DE AREA LIE AND CALCULATE THE AREA SIZE
+# ERMITTELN WIEVIELE RASTERZELLEN DER KLASSE 3 (LAUBBAUM), 4 (NADELBAUM), 9 (Street Tree Layer) UND 8 (BEBAUT - STARK DURCHGRÜNT) 
+    # JEWEILS IN WELCHER LBM-DE FLÄCHE LIEGEN UND DIE FLÄCHENGRÖSSE BERECHNEN
+
+# RASTERUNG DES LBM-DES IN 10x10m RASTER (GLEICHE AUFLÖSUNG, WIE DAS STADTGRÜNRASTER)
 # JEDEM RASTERPIXEL WURDE DER ID-WERT DES JEWEILIGEN LBM-DE-POLYGONS ZUGEWIESEN
 print("ID für jedes Polygon im LBM-DE erstellen")
 if len(arcpy.ListFields(lbm_Stadt_sing, "ID")) > 0:
@@ -249,8 +255,7 @@ print("LBM-DE in 10x10m Raster umwandeln")
 lbm_Stadt_ID_rast = output_gdb_1 + "\\lbm_stadt_rast"
 arcpy.PolygonToRaster_conversion(lbm_Stadt_sing, "ID", lbm_Stadt_ID_rast, "MAXIMUM_COMBINED_AREA", "", 10)
 
-# ERMITTELN WIEVIELE RASTERZELLEN DER KLASSE 3 (LAUBBAUM), 4 (NADELBAUM), 9 (Street Tree Layer) UND 8 (BEBAUT - STARK DURCHGRÜNT) 
-# JEWEILS IN WELCHER LBM-DE FLÄCHE LIEGEN UND DIE FLÄCHENGRÖSSE BERECHNEN - DIE ERGEBNISDATEI IST EINE TABELLE
+
 print("Ermitteln wieviele Rasterzellen an Bäumen und bebaut-stark durchgrünt in welcher LBM-DE-Fläche vorkommen")
 tabl_kl_3_4_8_9 = output_gdb_1 + "\\tab_Stadtgruenrast_3_4_8_9"
 TabulateArea(lbm_Stadt_ID_rast, "Value", path_Stadtgruen_Streettree, "Value", tabl_kl_3_4_8_9, "10", "CLASSES_AS_FIELDS")
