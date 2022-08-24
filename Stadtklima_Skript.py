@@ -2,7 +2,8 @@
 
 # PYTHON-VERSION 3.6
 # SOFTWARE: PYCHARM 2019.3.1, ARCGISpro 3.0.0
-# LANGUAGE: English & German
+# LANGUAGE DOCUMENTATION: English & German
+# LANGUAGE VARIABLES: German
 
 ### INDICATOR CLIMATE REGULATION IN CITIES ### KLIMAREGULATIONSINDIKATOR FÜR STÄDTE
 
@@ -209,7 +210,7 @@ print("Convert Streettree layer to 10x10m grid and insert into urban green grid 
 print("Streettree-Layer in 10x10m Raster umwandeln und als Kategorie 9 in Stadtgrünraster einfügen")
 
 if len(arcpy.ListFields(Street_Tree, "Klasse")) > 0:
-    print("Feld schon vorhanden")
+    print("Field already exists / Feld schon vorhanden")
 else:
     arcpy.AddField_management(Street_Tree, "Klasse", "LONG", "","", "", "", "NULLABLE", "", "")
 arcpy.CalculateField_management(Street_Tree, "Klasse", '9')
@@ -239,77 +240,90 @@ arcpy.management.MosaicToNewRaster(mosaik_dataset, output_gdb_2, "Stadtgruenrast
 
 # DETERMINE HOW MANY GRADUATE CELLS OF CLASS 3 (BROAD-LEAF TREE), 4 (CONIFEROUS TREE), 9 (STREET TREE LAYER) AND 8 (BUILT-UP BUT CONSIDERABLY VEGETATED). 
     # EACH IN WHICH LBM-DE AREA LIE AND CALCULATE THE AREA SIZE
+ # IN ORDER TO DO THIS, THE LBM-DE-POLYGON FILE IS CONVERTED TO  10X10 m RASTER (SAME RESOLUTION AS THE URBAN GREEN RASTER)
+    # EACH GRID PIXEL WAS ASSIGNED THE ID VALUE OF THE RESPECTIVE LBM-DE POLYGON
+    
 # ERMITTELN WIEVIELE RASTERZELLEN DER KLASSE 3 (LAUBBAUM), 4 (NADELBAUM), 9 (Street Tree Layer) UND 8 (BEBAUT - STARK DURCHGRÜNT) 
     # JEWEILS IN WELCHER LBM-DE FLÄCHE LIEGEN UND DIE FLÄCHENGRÖSSE BERECHNEN
-
-# RASTERUNG DES LBM-DES IN 10x10m RASTER (GLEICHE AUFLÖSUNG, WIE DAS STADTGRÜNRASTER)
-# JEDEM RASTERPIXEL WURDE DER ID-WERT DES JEWEILIGEN LBM-DE-POLYGONS ZUGEWIESEN
+ # DAHER WURDE DAS LBM-DE IN EIN 10x10m RASTER UMGEWANDELT (GLEICHE AUFLÖSUNG, WIE DAS STADTGRÜNRASTER)
+    # JEDEM RASTERPIXEL WURDE DER ID-WERT DES JEWEILIGEN LBM-DE-POLYGONS ZUGEWIESEN
+    
+print("Create ID for each polygon in LBM-DE")    
 print("ID für jedes Polygon im LBM-DE erstellen")
 if len(arcpy.ListFields(lbm_Stadt_sing, "ID")) > 0:
-    print("Feld schon vorhanden")
+    print("Field already exists / Feld schon vorhanden")
 else:
     arcpy.AddField_management(lbm_Stadt_sing, "ID", "DOUBLE", "", "", "", "", "NULLABLE", "", "")
 arcpy.CalculateField_management(lbm_Stadt_sing, "ID", '!OBJECTID_1!')
 
+print("Convert LBM-DE to 10x10m grid")
 print("LBM-DE in 10x10m Raster umwandeln")
 lbm_Stadt_ID_rast = output_gdb_1 + "\\lbm_stadt_rast"
 arcpy.PolygonToRaster_conversion(lbm_Stadt_sing, "ID", lbm_Stadt_ID_rast, "MAXIMUM_COMBINED_AREA", "", 10)
 
-
-print("Ermitteln wieviele Rasterzellen an Bäumen und bebaut-stark durchgrünt in welcher LBM-DE-Fläche vorkommen")
+print("Determine how many grid cells with trees occur in which LBM-DE area")
+print("Ermitteln wieviele Rasterzellen mit Bäumen in welcher LBM-DE-Fläche vorkommen")
 tabl_kl_3_4_8_9 = output_gdb_1 + "\\tab_Stadtgruenrast_3_4_8_9"
 TabulateArea(lbm_Stadt_ID_rast, "Value", path_Stadtgruen_Streettree, "Value", tabl_kl_3_4_8_9, "10", "CLASSES_AS_FIELDS")
 
-print("Für jede Klasse eine Spalte erstellen, in der die Flächengröße berechnet wird (Anzahl der Zellen x 100m² (10x10m)")
-# Flächengröße berechnen für Klasse 3 (Auf Basis der Rasterflächen)
+print("For class 3, 4, 8 and 9 create a column where the area size (from the raster) is calculated (number of cells x 100m² (10x10m)")
+print("Für die Klassen 3, 4, 8 und 9 eine Spalte erstellen, in der die Flächengröße berechnet wird (Anzahl der Zellen x 100m² (10x10m)")
+
+# class 3 / Klasse 3
 if len(arcpy.ListFields(tabl_kl_3_4_8_9, "VALUE_3_Area")) > 0:
     print("Feld schon vorhanden")
 else:
     arcpy.AddField_management(tabl_kl_3_4_8_9, "VALUE_3_Area", "DOUBLE", "","", "", "", "NULLABLE", "", "")
 arcpy.CalculateField_management(tabl_kl_3_4_8_9, "VALUE_3_Area", '!VALUE_3!', "PYTHON3")
 
-# Flächengröße berechnen für Klasse 4 (Auf Basis der Rasterflächen)
+# class 4 / Klasse 4
 if len(arcpy.ListFields(tabl_kl_3_4_8_9, "VALUE_4_Area")) > 0:
-    print("Feld schon vorhanden")
+    print("Field already exists / Feld schon vorhanden")
 else:
     arcpy.AddField_management(tabl_kl_3_4_8_9, "VALUE_4_Area", "DOUBLE", "","", "", "", "NULLABLE", "", "")
 arcpy.CalculateField_management(tabl_kl_3_4_8_9, "VALUE_4_Area", "!VALUE_4!", "PYTHON3")
 
-# ANALYSEN MIT GRÜNVOLUMENDATEN VON FÜNF STÄDTEN ZEIGTEN, DASS DIE KLASSE 8 (BEBAUT, STARK DURCHGRÜN) IM DURCHSCHNITT NUR 18 PROZENT BAUMBEDECKUNG BEINHALTET
-# SIEHE SYRBE ET AL. (2022)
-# DAHER WIRD DIE FLÄCHENGRÖSSE (10x10m = 100m²) DER KLASSE 8 MIT 0,18 MULTIPLIZIERT
+# class 8 / Klasse 8
 
-# Flächengröße berechnen für Klasse 8 (Auf Basis der Rasterflächen)
+# EARLIER ANALYSES WITH GREEN VOLUME DATA FROM FIVE CITIES SHOWED THAT CLASS 8 (BUILT-UP, BUT CONSIDERABLY VEGETATED) 
+    # ON AVERAGE CONTAINS ONLY 18 PERCENT TREE COVER
+    # THEREFORE, THE AREA SIZE (10x10m = 100m²) OF CLASS 8 IS MULTIPLIED BY 0.18
+    
+# VORANGEGANGENE ANALYSEN MIT GRÜNVOLUMENDATEN VON FÜNF STÄDTEN ZEIGTEN, DASS DIE KLASSE 8 (BEBAUT, STARK DURCHGRÜN) 
+    # IM DURCHSCHNITT NUR 18 PROZENT BAUMBEDECKUNG BEINHALTET
+    # DAHER WIRD DIE FLÄCHENGRÖSSE (10x10m = 100m²) DER KLASSE 8 MIT 0,18 MULTIPLIZIERT
+
 if len(arcpy.ListFields(tabl_kl_3_4_8_9, "VALUE_8_Area")) > 0:
-    print("Feld schon vorhanden")
+    print("Field already exists / Feld schon vorhanden")
 else:
     arcpy.AddField_management(tabl_kl_3_4_8_9, "VALUE_8_Area", "DOUBLE", "","", "", "", "NULLABLE", "", "")
 arcpy.CalculateField_management(tabl_kl_3_4_8_9, "VALUE_8_Area", "!VALUE_8!*0.18", "PYTHON3")
 
-# Flächengröße berechnen für Klasse 9 (= Street Tree Layer)
+# class 9 / Klasse 9
 if len(arcpy.ListFields(tabl_kl_3_4_8_9, "VALUE_9_Area")) > 0:
-    print("Feld schon vorhanden")
+    print("Field already exists / Feld schon vorhanden")
 else:
     arcpy.AddField_management(tabl_kl_3_4_8_9, "VALUE_9_Area", "DOUBLE", "","", "", "", "NULLABLE", "", "")
 arcpy.CalculateField_management(tabl_kl_3_4_8_9, "VALUE_9_Area", "!VALUE_9!", "PYTHON3")
 
-# ZUSAMMENRECHNEN DER BAUMBEDECKUNG (SUMME DER FLÄCHENGRÖSSE VON LAUBBAUM, NADELBAUM, 18-PROZENTIGER ANTEIL VON BEBAUT, STARK DURCHGRÜNT)
-print("Ein neues Feld erstellen in das die Gesamtfläche der Baumbedeckung berechnet wird, alle Spalten der Klassenflächengrößen zusammenrechnen")
+print("Create a new field into which the total area of tree cover is calculated")
+print("Ein neues Feld erstellen in das die Gesamtfläche der Baumbedeckung berechnet wird")
 if len(arcpy.ListFields(tabl_kl_3_4_8_9, "Baumbed_Area")) > 0:
-    print("Feld schon vorhanden")
+    print("Field already exists / Feld schon vorhanden")
 else:
     arcpy.AddField_management(tabl_kl_3_4_8_9, "Baumbed_Area", "DOUBLE", "","", "", "", "NULLABLE", "", "")
 arcpy.management.CalculateField(tabl_kl_3_4_8_9, "Baumbed_Area", "!VALUE_3_Area!+!VALUE_4_Area!+!VALUE_8_Area!+!VALUE_9_Area!", "PYTHON3")
 
-# IM LBM-DE EINE UNVERÄNDERLICHE SPALTE MIT DER FLÄCHENGRÖSSE ANLEGEN
+# CREATE AN UNCHANGEABLE COLUMN WITH THE AREA SIZE IN THE LBM-DE (THE SHAPE_AREA FIELD CAN CHANGE DYNAMICALLY)
+# IM LBM-DE EINE UNVERÄNDERLICHE SPALTE MIT DER FLÄCHENGRÖSSE ANLEGEN (DIE SHAPE_AREA-SPALTE KANN SICH DYNAMISCH VERÄNDERN) 
 if len(arcpy.ListFields(lbm_Stadt_sing, "AREA")) > 0:
-    print("Feld schon vorhanden")
+    print("Field already exists / Feld schon vorhanden")
 else:
     arcpy.AddField_management(lbm_Stadt_sing, "AREA", "DOUBLE", "","", "", "", "NULLABLE", "", "")
 arcpy.management.CalculateField(lbm_Stadt_sing, "AREA", "!Shape_Area!", "PYTHON3")
 
-# DIE WERTE ZUR BAUMBEDECKUNG AUS DEM STADTGRÜNMONITORING-RASTER AN DAS LBM-DE ANHÄNGEN ÜBER DIE ZU BEGINN ERZEUGTE ID FÜR JEDES LBM-DE-POLYGON
-print("Baumbedeckungsfläche an LBM-DE anhängen über ID")
+print("Append the tree cover values from the city green grid to the LBM-DE via the previously generated ID for each LBM-DE polygon")
+print("Die Werte zur Baumbedeckung aus dem Stadtgrün-Raster an das LBM-DE anhängen über die zuvor erzeugte ID für jedes LBM-DE-Polygon")
 arcpy.management.JoinField(lbm_Stadt_sing, "ID", tabl_kl_3_4_8_9, "VALUE")
 lbm_Stadt_Baumbed = output_gdb_2 + "\\lbm_Stadt_Baumbed"
 arcpy.conversion.FeatureClassToFeatureClass(lbm_Stadt_sing, output_gdb_2, "lbm_Stadt_Baumbed")
@@ -324,7 +338,7 @@ arcpy.DeleteField_management(lbm_Stadt_sing, Felder_loeschen)
 # BERECHNUNG DES PROZENTUALEN ANTEILS DER BAUMBEDECKUNG (FLÄCHE DER BAUMBEDECKUNG IM LBM-DE-POLYGON/GESAMTFLÄCHE DES POLYGONS*100)
 print("Ein neues Feld erstellen, in dem der Anteil der Baumbedeckung berechnet wird")
 if len(arcpy.ListFields(lbm_Stadt_Baumbed, "Baumbed_Ant")) > 0:
-    print("FELD SCHON VORHANDEN")
+    print("Field already exists / Feld schon vorhanden")
 else:
     arcpy.AddField_management(lbm_Stadt_Baumbed, "Baumbed_Ant", "DOUBLE", "","", "", "", "NULLABLE", "", "")
 print("Berechnung des prozentualen Anteils der Baumbedeckung")
