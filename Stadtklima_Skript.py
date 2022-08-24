@@ -16,7 +16,7 @@
 # Städten ab 50.000 Einwohnern ermittelt. Durch die Verschneidung von Einwohnerdaten mit der Information zur Kühlungskapazität mit kann ermittelt werden, 
 # wo Einwohner in welchem Maß mit Kühlungsleistung durch urbanes Grün versorgt werden.
 
-# ENVIRONMENT OPTIONS
+# ENVIRONMENT OPTIONS / UMGBUNGSEINSTELLUNGEN
 import arcpy
 import math
 from arcpy import env
@@ -24,21 +24,23 @@ from arcpy.sa import *
 arcpy.env.parallelProcessingFactor = "100%"
 arcpy.env.overwriteOutput = True
 
-# Snap-Raster: INSPIRE-conform-Grid (EU standard) with 10x10 m Raster Cell Size # Fang-Raster: INSPIRE-konformes Grid (nach EU-Standard) mit 10x10m Rasterzellgröße 
+# Snap-Raster: INSPIRE-conform-Grid (EU standard) with 10x10 m Raster Cell Size 
+# Fang-Raster: INSPIRE-konformes Grid (nach EU-Standard) mit 10x10m Rasterzellgröße 
 arcpy.env.snapRaster = "D:/tarox1_user5/OESL_P644_671/INSPIRE_Grid/inspire_grids_10.gdb/raster_10_complete" 
 arcpy.env.extent = "MAXOF"
 
-# YEAR
+# YEAR / JAHR
 Jahr = "_2018"
 
-# INPUT AND OUTPUT GEODATABASES
+# INPUT AND OUTPUT GEODATABASES / EINGANGS- UND AUSGABE-GEODATABASES
 # Please replace by own paths # Bitte eigenen Pfad angeben
 Eingangsdaten_gdb = "E:/Meier/Stadtklima/Eingangsdaten.gdb"   
 output_gdb_1 = "E:/Meier/Stadtklima/output_1" + Jahr + ".gdb" # output for ...
 output_gdb_2 = "E:/Meier/Stadtklima/output_2" + Jahr + ".gdb" # output for ...
 output_gdb_3 = "E:/Meier/Stadtklima/output_3" + Jahr + ".gdb" # output for ...
 
-# DATA SETS - find description in ReadMe # DATENSÄTZE - Beschreibung im ReadMe
+# DATA SETS - find description in ReadMe 
+# DATENSÄTZE - Beschreibung im ReadMe
 # Please replace by own paths # Bitte eigenen Pfad angeben
 lbm_DE = "D:/tarox1_user5/OESL_P644_671/LBM/oriG/lbm_de_2018.gdb/lbm_de_2018_v2"
 Einwohnergrid = "D:/tarox1_user5/OESL_P644_671/Einwohnerzahlen/zensus2011.gdb/grid_r100_zensus11ew"
@@ -53,11 +55,11 @@ vg25_GEM_Selektion_Stadt = "D:/tarox1_user5/OESL_P644_671/VG_ATKIS/VG_25/stadte_
 # SELECT CITIES WITH A POPULATION OF 50,000 OR MORE (FROM VG25) WITHIN THE URBAN ATLAS FUNCTIONAL AREAS
 # VIA SELECT BY LOCATION
     # the clip function would not work in this step, because otherwise you would select small splinters of VG25 municipalities, which were not actually
-    # been included in the Urban Atlas, but partially extend into the Urban Functional Areas. Therefore the function "Select by location" was taken.
+        # been included in the Urban Atlas, but partially extend into the Urban Functional Areas. Therefore the function "Select by location" was taken.
 # STÄDTE AB 50.000 EINWOHNERN (AUS VG25) INNERHALB DER URBAN ATLAS FUNCTIONAL AREAS SELEKTIEREN
 # ÜBER SELECT BY LOCATION
     # die Clip-Funktion würde in diesem Schritt nicht funktionieren, da man sonst kleine Splitter von VG25-Gemeinden mit selektieren würde, die eigentlich nicht
-    # im Urban Atlas erfasst worden sind, aber teilweise in die Urban Functional Areas hineinragen. Daher wurde die Funktion "Select by location" genommen
+        # im Urban Atlas erfasst worden sind, aber teilweise in die Urban Functional Areas hineinragen. Daher wurde die Funktion "Select by location" genommen
 
 print("Select cities within the Urban Atlas / Städte innerhalb des Urban Atlas auswählen")
 lyr = Eingangsdaten_gdb + "\\lyr"
@@ -66,11 +68,10 @@ arcpy.SelectLayerByLocation_management(lyr, 'HAVE_THEIR_CENTER_IN', Urban_Functi
 vg_25_sel_Stadt_SEL = Eingangsdaten_gdb + "\\vg_25_sel_Stadt_SEL"
 arcpy.CopyFeatures_management(lyr, vg_25_sel_Stadt_SEL)
 
-
 # IN SOME CASES, THE VG25 COMMUNITIES ARE LARGER THAN THE URBAN-FUNCTIONAL AREAS, THEREFORE THE VG25 GEOMETRIES WHICH ARE
-# OUTSIDE THE URBAN-FUNCTIONAL-AREAS ARE REMOVED
+    # OUTSIDE THE URBAN-FUNCTIONAL-AREAS ARE REMOVED
 # TEILWEISE SIND DIE VG25-GEMEINDEN GRÖSSER ALS DIE URBAN-FUNCTIONAL AREAS, DESWEGEN WERDEN DIE VG25-GEOMETRIEN
-# AUSSERHALB DER URBAN-FUNCTIONAL-AREAS ENTFERNT
+    # AUSSERHALB DER URBAN-FUNCTIONAL-AREAS ENTFERNT
 
 vg_25_sel_Stadt_UA = Eingangsdaten_gdb + "\\vg_25_sel_Stadt_UA"
 arcpy.analysis.Clip(vg_25_sel_Stadt_SEL, Urban_Functional_Areas, vg_25_sel_Stadt_UA)
@@ -198,13 +199,15 @@ with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
      # 7: Water / Wasser
      # 8: Built-up, but considerably vegetated / Bebaut, stark durchgrünt
         
+# COMBINE BOTH DATASETS WITH TREE COVER INFORMATION INTO ONE DATASET (STREET TREE LAYER WITH TREE DATA FROM URBAN GREENING RASTER)
+# IN CASE OF OVERLAYS, THE TREE DATA FROM THE URBAN GREEN MONITORING LAYER HAVE A HIGHER PRIORITY THAN THE STREET TREE LAYER
 
-# COMBINE BOTH DATASETS WITH TREE COVER INFORMATION INTO ONE DATASET
-# BEIDE DATENSÄTZE MIT BAUMBEDECKUNGSINFORMATIONEN IN EINEN DATENSATZ VEREINIGEN
+# BEIDE DATENSÄTZE MIT BAUMBEDECKUNGSINFORMATIONEN IN EINEN DATENSATZ VEREINIGEN (STREET TREE LAYER MIT BAUMDATEN AUS DEM STADTGRUENRASTER KOMBINIEREN)
+# BEI UEBERLAGERUNGEN HABEN DIE BAUMDATEN AUS DEM STADTGRÜN-RASTER DIE HOEHERE PRIORITAET, ALS DER STREET TREE LAYER
         
 print("Convert Streettree layer to 10x10m grid and insert into urban green grid as category 9")
 print("Streettree-Layer in 10x10m Raster umwandeln und als Kategorie 9 in Stadtgrünraster einfügen")
-print("Feld für  Kategorie 9 erstellen")
+
 if len(arcpy.ListFields(Street_Tree, "Klasse")) > 0:
     print("Feld schon vorhanden")
 else:
@@ -221,16 +224,13 @@ remap = RemapValue([[1, "NoData"], [2, "NoData"], [3, 3], [4, 4], [5, "NoData"],
 out_raster = Reclassify(Stadtgruenraster, "Value", remap, "NoData")
 out_raster.save(path_recl_Stadtgruen_3_4)
 
-# AUS DEM STADTGRÜNMONITORING-RASTER DIE PIXEL EXTRAHIEREN WELCHE BAUM-INFORMATION ENTHALTEN: 8: BEBAUT, STARK DURCHGRÜNT)
-print("Reklassifikation des Stadtgrünmonitoring-Rasters")
+print("Extract pixels containing tree information from the urban green monitoring grid: Class 8")
+print("Aus dem Stadtgrünmonitoring-Raster die Pixel extrahieren, welche Baum-Informationen enthalten: Klasse 8")
 path_recl_Stadtgruen_8 = output_gdb_1 + "\\Stadtgruenrast_8"
 remap = RemapValue([[1, "NODATA"], [2, "NODATA"], [3, "NODATA"], [4, "NODATA"], [5, "NODATA"], [6, "NODATA"], [7, "NODATA"], [8, 8]])
 out_raster = Reclassify(Stadtgruenraster, "Value", remap, "NODATA")
 out_raster.save(path_recl_Stadtgruen_8)
 
-# RASTER-DATENSATZ MIT BAUMINFORMATION: STREET TREE LAYER MIT BAUMDATEN AUS STADTGRUENRASTER ZUSAMMENFÜGEN
-# BEI UEBERLAGERUNGEN HABEN DIE BAUMDATEN AUS DEM STADTGRUENMONITORING LAYER DIE HOEHERE PRIORITAET, GEFOLGT VOM STREET TREE LAYER UND
-# ABSCHLIESSEND DIE RASTERZELLEN BEBAUT-STARK DURCHGRÜNT AUS DEM STADTGRUENRASTER
 print("Street Tree Layer und Stadtgrünraster zusammenfügen")
 path_Stadtgruen_Streettree = output_gdb_2 + "\\Stadtgruenrast_3_4_8_9"
 mosaik_dataset = [path_recl_Stadtgruen_3_4, Street_Tree_rast, path_recl_Stadtgruen_8]
@@ -244,7 +244,6 @@ if len(arcpy.ListFields(lbm_Stadt_sing, "ID")) > 0:
 else:
     arcpy.AddField_management(lbm_Stadt_sing, "ID", "DOUBLE", "", "", "", "", "NULLABLE", "", "")
 arcpy.CalculateField_management(lbm_Stadt_sing, "ID", '!OBJECTID_1!')
-
 
 print("LBM-DE in 10x10m Raster umwandeln")
 lbm_Stadt_ID_rast = output_gdb_1 + "\\lbm_stadt_rast"
