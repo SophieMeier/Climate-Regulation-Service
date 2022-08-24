@@ -2,6 +2,7 @@
 
 # PYTHON-VERSION 3.6
 # SOFTWARE: PYCHARM 2019.3.1, ARCGISpro 3.0.0
+# LANGUAGE: English & German
 
 ### INDICATOR CLIMATE REGULATION IN CITIES ### KLIMAREGULATIONSINDIKATOR FÜR STÄDTE
 
@@ -185,25 +186,18 @@ with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
 
 # DETERMINATION OF THE PROPORTION OF TREES IN EACH CLC-CLASS IN LBM-DE - FOR THIS PURPOSE, INFORMATION ON TREES FROM THE
 # URBAN GREEN MONITORING RASTER DATASET WAS USED, WHICH HAS FOLLOWING CLASSES
-     # 1: Built-up
-     # 2: Open ground
-     # 3: Hardwood
-     # 4: Coniferous
-     # 5: Arable land (low seasonal vegetation)
-     # 6: Meadow (low seasonal vegetation)
-     # 7: Water
-     # 8: Built-up, but considerably vegetated
-        
 # ERMITLUNG DES BAUMANTEILS JEDER CLC-KLASSE IM LBM-DE - HIERZU WURDEN INFORMATIONEN ZU BÄUMEN AUS DEM
 # STADTGRÜNMONITORING-RASTERDATENSATZ VERWENDET, DAS FOLGENDE KLASSEN ENTHÄLT
-     # 1: Bebaut
-     # 2: Offener Boden
-     # 3: Laubholz
-     # 4: Nadelholz
-     # 5: Ackerland (niedrige saisonale Vegetation)
-     # 6: Wiese (niedrige ganzjährige Vegetation)
-     # 7: Wasser
-     # 8: Bebaut, stark durchgrünt
+
+     # 1: Built-up / bebaut
+     # 2: Open ground / offener Boden
+     # 3: Broad-leaved tree / Laubholz
+     # 4: Coniferous tree / Nadelholz
+     # 5: Arable land (low seasonal vegetation) / Ackerland (niedrige saisonale Vegetation)
+     # 6: Meadow (low seasonal vegetation) / Wiese (niedrige ganzjährige Vegetation)
+     # 7: Water / Wasser
+     # 8: Built-up, but considerably vegetated / Bebaut, stark durchgrünt
+        
 
 # COMBINE BOTH DATASETS WITH TREE COVER INFORMATION INTO ONE DATASET
 # BEIDE DATENSÄTZE MIT BAUMBEDECKUNGSINFORMATIONEN IN EINEN DATENSATZ VEREINIGEN
