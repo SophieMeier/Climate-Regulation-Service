@@ -5,7 +5,8 @@
 # LANGUAGE DOCUMENTATION: English & German
 # LANGUAGE VARIABLES: German
 
-### INDICATOR CLIMATE REGULATION IN CITIES ### KLIMAREGULATIONSINDIKATOR FÜR STÄDTE
+### INDICATOR CLIMATE REGULATION IN CITIES
+### INDIKATOR ZUR KLIMAREGULATION IN STÄDTEN
 
 # SHORT DESCRIPTION OF THE INDICATOR
 # Using land cover type, percentage of tree canopy cover, and area size, a cooling capacity value (CCA value) is determined for each area in 
