@@ -26,8 +26,8 @@ from arcpy.sa import *
 arcpy.env.parallelProcessingFactor = "100%"
 arcpy.env.overwriteOutput = True
 
-# Snap-Raster: INSPIRE-conform-Grid (EU standard) with 10x10 m Raster Cell Size 
-# Fang-Raster: INSPIRE-konformes Grid (nach EU-Standard) mit 10x10m Rasterzellgröße 
+# SNAP-RASTER: INSPIRE-conform-Grid (EU standard) with 10x10 m Raster Cell Size 
+# FANG-RASTER: INSPIRE-konformes Grid (nach EU-Standard) mit 10x10m Rasterzellgröße 
 arcpy.env.snapRaster = "D:/tarox1_user5/OESL_P644_671/INSPIRE_Grid/inspire_grids_10.gdb/raster_10_complete" 
 arcpy.env.extent = "MAXOF"
 
