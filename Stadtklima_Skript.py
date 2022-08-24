@@ -110,75 +110,75 @@ else:
 
 with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
     for rowCLC in cursorCLC:
-        if rowCLC[0] == '111':        # durchgängig städtische Prägung
+        if rowCLC[0] == '111':        # CORINE land cover class (CLC) : continuous urban fabric / durchgängig städtische Prägung
             rowCLC[1] = 'V'           # sealed / Versiegelt
-        elif rowCLC[0] == '112':      # Nicht durchgängig städtische Prägung
+        elif rowCLC[0] == '112':      # CLC: discontinuous urban fabric / Nicht durchgängig städtische Prägung
             rowCLC[1] = 'H'           # heterogeneous / heterogen
-        elif rowCLC[0] == '121':      # Industrie- und Gewerbefläche
+        elif rowCLC[0] == '121':      # CLC: industrial and commercial units / Industrie- und Gewerbefläche
             rowCLC[1] = 'V'
-        elif rowCLC[0] == '122':      # Straßen- und Eisenbahnnetze
+        elif rowCLC[0] == '122':      # CLC: road and rail networks and associated land / Straßen- und Eisenbahnnetze
             rowCLC[1] = 'V'
-        elif rowCLC[0] == '123':      # Hafengebiete
+        elif rowCLC[0] == '123':      # CLC: port areas / Hafengebiete
             rowCLC[1] = 'V'
-        elif rowCLC[0] == '124':      # Flughafen
+        elif rowCLC[0] == '124':      # CLC: airport / Flughafen
             rowCLC[1] = 'V'
-        elif rowCLC[0] == '131':      # Abbauflächen
+        elif rowCLC[0] == '131':      # CLC: mineral extraction sites / Abbauflächen
             rowCLC[1] = 'O'           # open soil / offener Boden
-        elif rowCLC[0] == '132':      # Deponien und Abraumhalden
+        elif rowCLC[0] == '132':      # CLC: dumps sites / Deponien und Abraumhalden
             rowCLC[1] = 'H'
         elif rowCLC[0] == '133':      # Baustellen
             rowCLC[1] = 'H'
-        elif rowCLC[0] == '141':      # Städtische Grünflächen
+        elif rowCLC[0] == '141':      # CLC: green urban area / Städtische Grünflächen
             rowCLC[1] = 'G'           # grass / Gras
-        elif rowCLC[0] == '142':      # Sport- und Freizeitanlagen
+        elif rowCLC[0] == '142':      # CLC: sport and leisure facilities / Sport- und Freizeitanlagen
             rowCLC[1] = 'H'
-        elif rowCLC[0] == '211':      # nicht bewässertes Ackerland
+        elif rowCLC[0] == '211':      # CLC: non-irrigated arable land / nicht bewässertes Ackerland
             rowCLC[1] = 'O'
-        elif rowCLC[0] == '221':      # Weinbauflächen
+        elif rowCLC[0] == '221':      # CLC: vineyards / Weinbauflächen
             rowCLC[1] = 'G'
-        elif rowCLC[0] == '222':      # Obst- und Beerenobstbestände
+        elif rowCLC[0] == '222':      # CLC: fruit tree and berry plantations / Obst- und Beerenobstbestände
             rowCLC[1] = 'G'
-        elif rowCLC[0] == '231':      # Wiesen und Weiden
+        elif rowCLC[0] == '231':      # CLC: pasture, meadows / Wiesen und Weiden
             rowCLC[1] = 'G'
-        elif rowCLC[0] == '311':      # Laubwälder
+        elif rowCLC[0] == '311':      # CLC: broad-leaved forest / Laubwälder
             rowCLC[1] = 'WL'          # forest / Wald
-        elif rowCLC[0] == '312':      # Nadelwälder
+        elif rowCLC[0] == '312':      # CLC:  coniferous forest / Nadelwälder
             rowCLC[1] = 'WL'
-        elif rowCLC[0] == '313':      # Mischwälder
+        elif rowCLC[0] == '313':      # CLC: mixed forest / Mischwälder
             rowCLC[1] = 'WL'
-        elif rowCLC[0] == '321':      # Natürliches Grünland
+        elif rowCLC[0] == '321':      # CLC: natural grassland / Natürliches Grünland
             rowCLC[1] = 'G'
-        elif rowCLC[0] == '322':      # Heiden und Moorheiden
+        elif rowCLC[0] == '322':      # CLC: moors and heathland / Heiden und Moorheiden
             rowCLC[1] = 'G'
-        elif rowCLC[0] == '324':      # Wald-Strauch-Übergangsstadien
+        elif rowCLC[0] == '324':      # CLC: transitional woodland, shrub / Wald-Strauch-Übergangsstadien
             rowCLC[1] = 'G'
-        elif rowCLC[0] == '331':      # Strände, Dünen und Sandflächen
+        elif rowCLC[0] == '331':      # CLC: beaches, dunes and sand plains / Strände, Dünen und Sandflächen
             rowCLC[1] = 'O'
-        elif rowCLC[0] == '332':      # Felsflächen ohne Vegetation
+        elif rowCLC[0] == '332':      # CLC: bare rock / Felsflächen ohne Vegetation
             rowCLC[1] = 'O'
-        elif rowCLC[0] == '333':      # Flächen mit spärlicher Vegetation
+        elif rowCLC[0] == '333':      # CLC: sparsely vegetated areas / Flächen mit spärlicher Vegetation
             rowCLC[1] = 'O'
-        elif rowCLC[0] == '334':      # Brandflächen
+        elif rowCLC[0] == '334':      # CLC: burnt areas / Brandflächen
             rowCLC[1] = 'O'
-        elif rowCLC[0] == '335':      # Gletscher und Dauerschneegebiete (nicht in den ausgewählten Stadtgebieten vorzufinden)
+        elif rowCLC[0] == '335':      # CLC: glaciers and perpetual snow / Gletscher und Dauerschneegebiete (nicht in den ausgewählten Stadtgebieten in Deutschland vorzufinden)
             rowCLC[1] = 'WS'          # water surface / Wasser
-        elif rowCLC[0] == '411':      # Sümpfe
+        elif rowCLC[0] == '411':      # CLC: inland marshes / Sümpfe
             rowCLC[1] = 'WS'
-        elif rowCLC[0] == '412':      # Torfmoore
+        elif rowCLC[0] == '412':      # CLC: peatbogs / Torfmoore
             rowCLC[1] = 'WS'
-        elif rowCLC[0] == '421':      # Salzwiesen
+        elif rowCLC[0] == '421':      # CLC: coastal salt marshes / Salzwiesen
             rowCLC[1] = 'WS'
-        elif rowCLC[0] == '423':      # Watt
+        elif rowCLC[0] == '423':      # CLC: intertidal flats / Watt
             rowCLC[1] = 'WS'
-        elif rowCLC[0] == '511':      # Gewässerläufe
+        elif rowCLC[0] == '511':      # CLC: watercourses / Gewässerläufe
             rowCLC[1] = 'WS'
-        elif rowCLC[0] == '512':      # Wasserflächen
+        elif rowCLC[0] == '512':      # CLC: water bodies / Wasserflächen
             rowCLC[1] = 'WS'
-        elif rowCLC[0] == '521':      # Lagunen
+        elif rowCLC[0] == '521':      # CLC: coastal lagoons / Lagunen
             rowCLC[1] = 'WS'
-        elif rowCLC[0] == '522':      # Mündungsgebiete
+        elif rowCLC[0] == '522':      # CLC: estuaries / Mündungsgebiete
             rowCLC[1] = 'WS'
-        elif rowCLC[0] == '523':      # Meere und Ozeane
+        elif rowCLC[0] == '523':      # CLC: sea and ocean / Meere und Ozeane
             rowCLC[1] = 'WS'
 
         cursorCLC.updateRow(rowCLC)
