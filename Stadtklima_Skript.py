@@ -93,7 +93,7 @@ lbm_Stadt_sing = Eingangsdaten_gdb + "\\lbm_Stadt_sing" + Jahr
 arcpy.management.MultipartToSinglepart(lbm_Stadt, lbm_Stadt_sing)
 
 # LAND COVER TYPE AFTER ZARDO ET AL. 2017 AND SYRBE ET AL. 2022/ BODENBEDECKUNGSTYP NACH ZARDO ET AL. 2017 UND SYRBE ET AL. 2022
-# Abrevations for the land cover types / Abkürzungen für die Bodenbedeckungstypen:
+# Abrevations for the land cover types (BD) / Abkürzungen für die Bodenbedeckungstypen (BD):
      # V: sealed/versiegelt
      # O: open soil / offener Boden
      # H: heterogeneous / heterogen
@@ -101,7 +101,7 @@ arcpy.management.MultipartToSinglepart(lbm_Stadt, lbm_Stadt_sing)
      # G: grass / Gras
      # WL: forest / Wald
 
-print("Create field for land cover 'BD' and assign CLC classes in LBM-DE to land cover types")
+print("Create field for land cover type 'BD' and assign types to CLC classes")
 print("Feld für Bodenbedeckung 'BD' anlegen und CLC-Klassen im LBM-DE den Bodenbedeckungstypen zuweisen")
     if len(arcpy.ListFields(lbm_Stadt_sing, "BD")) > 0:
         print("Field already exists / Feld schon vorhanden")
@@ -111,9 +111,9 @@ else:
 with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
     for rowCLC in cursorCLC:
         if rowCLC[0] == '111':        # CORINE land cover class (CLC) : continuous urban fabric / durchgängig städtische Prägung
-            rowCLC[1] = 'V'           # sealed / Versiegelt
+            rowCLC[1] = 'V'             # land cover type BD: sealed / Versiegelt
         elif rowCLC[0] == '112':      # CLC: discontinuous urban fabric / Nicht durchgängig städtische Prägung
-            rowCLC[1] = 'H'           # heterogeneous / heterogen
+            rowCLC[1] = 'H'             # BD: heterogeneous / heterogen
         elif rowCLC[0] == '121':      # CLC: industrial and commercial units / Industrie- und Gewerbefläche
             rowCLC[1] = 'V'
         elif rowCLC[0] == '122':      # CLC: road and rail networks and associated land / Straßen- und Eisenbahnnetze
@@ -123,13 +123,13 @@ with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
         elif rowCLC[0] == '124':      # CLC: airport / Flughafen
             rowCLC[1] = 'V'
         elif rowCLC[0] == '131':      # CLC: mineral extraction sites / Abbauflächen
-            rowCLC[1] = 'O'           # open soil / offener Boden
+            rowCLC[1] = 'O'             # BD: open soil / offener Boden
         elif rowCLC[0] == '132':      # CLC: dumps sites / Deponien und Abraumhalden
             rowCLC[1] = 'H'
-        elif rowCLC[0] == '133':      # Baustellen
+        elif rowCLC[0] == '133':      # CLC: construction sites / Baustellen
             rowCLC[1] = 'H'
         elif rowCLC[0] == '141':      # CLC: green urban area / Städtische Grünflächen
-            rowCLC[1] = 'G'           # grass / Gras
+            rowCLC[1] = 'G'             # BD: grass / Gras
         elif rowCLC[0] == '142':      # CLC: sport and leisure facilities / Sport- und Freizeitanlagen
             rowCLC[1] = 'H'
         elif rowCLC[0] == '211':      # CLC: non-irrigated arable land / nicht bewässertes Ackerland
@@ -141,7 +141,7 @@ with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
         elif rowCLC[0] == '231':      # CLC: pasture, meadows / Wiesen und Weiden
             rowCLC[1] = 'G'
         elif rowCLC[0] == '311':      # CLC: broad-leaved forest / Laubwälder
-            rowCLC[1] = 'WL'          # forest / Wald
+            rowCLC[1] = 'WL'            # BD: forest / Wald
         elif rowCLC[0] == '312':      # CLC:  coniferous forest / Nadelwälder
             rowCLC[1] = 'WL'
         elif rowCLC[0] == '313':      # CLC: mixed forest / Mischwälder
@@ -161,7 +161,7 @@ with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
         elif rowCLC[0] == '334':      # CLC: burnt areas / Brandflächen
             rowCLC[1] = 'O'
         elif rowCLC[0] == '335':      # CLC: glaciers and perpetual snow / Gletscher und Dauerschneegebiete (nicht in den ausgewählten Stadtgebieten in Deutschland vorzufinden)
-            rowCLC[1] = 'WS'          # water surface / Wasser
+            rowCLC[1] = 'WS'            # BD: water surface / Wasser
         elif rowCLC[0] == '411':      # CLC: inland marshes / Sümpfe
             rowCLC[1] = 'WS'
         elif rowCLC[0] == '412':      # CLC: peatbogs / Torfmoore
