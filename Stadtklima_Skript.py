@@ -329,31 +329,52 @@ arcpy.management.JoinField(lbm_Stadt_sing, "ID", tabl_kl_3_4_8_9, "VALUE")
 lbm_Stadt_Baumbed = output_gdb_2 + "\\lbm_Stadt_Baumbed"
 arcpy.conversion.FeatureClassToFeatureClass(lbm_Stadt_sing, output_gdb_2, "lbm_Stadt_Baumbed")
 
-print("Felder im ursprünglichen LBM-DE-Datensatz nach dem Join wieder bereinigen")
+print("restore the original LBM-DE dataset - remove columns that were previously appended by join function")
+print("den ursprünglichen LBM-DE-Datensatz wiederherstellen - Spalten, die durch Join-Funktion zuvor angehängt wurden, wieder entfernen")
 FCfields = [f.name for f in arcpy.ListFields(lbm_Stadt_sing)]
 nicht_loeschen = ['AREA', 'Baumbed_Area', 'BD', 'ID', 'CLC_num', 'CLC_st1', 'Cellcode50000', 'CellCode', 'FID_grid_50000_complete', 'SHAPE_Leng', 
                   'CLC18', 'METHOD_AKT', 'LBMDE_ID', 'ZUS_AKT', 'VEG_AKT', 'SIE_AKT', 'LN_AKT','LB_AKT', 'LAND', 'Shape_Length', 'Shape_Area', 'Shape', 'OBJECTID_1']
 Felder_loeschen = list(set(FCfields) - set(nicht_loeschen))
 arcpy.DeleteField_management(lbm_Stadt_sing, Felder_loeschen)
 
-# BERECHNUNG DES PROZENTUALEN ANTEILS DER BAUMBEDECKUNG (FLÄCHE DER BAUMBEDECKUNG IM LBM-DE-POLYGON/GESAMTFLÄCHE DES POLYGONS*100)
-print("Ein neues Feld erstellen, in dem der Anteil der Baumbedeckung berechnet wird")
+# CALCULATION OF THE PERCENTAGE OF TREE COVER (AREA OF TREE COVER IN LBM-DE-POLYGON/TOTAL AREA OF POLYGON)
+# BERECHNUNG DES PROZENTUALEN ANTEILS DER BAUMBEDECKUNG (FLÄCHE DER BAUMBEDECKUNG IM LBM-DE-POLYGON/GESAMTFLÄCHE DES POLYGONS)
+
+print("Calculation of the percentage of tree cover")
+print("Berechnung des prozentualen Anteils der Baumbedeckung")
 if len(arcpy.ListFields(lbm_Stadt_Baumbed, "Baumbed_Ant")) > 0:
     print("Field already exists / Feld schon vorhanden")
 else:
     arcpy.AddField_management(lbm_Stadt_Baumbed, "Baumbed_Ant", "DOUBLE", "","", "", "", "NULLABLE", "", "")
-print("Berechnung des prozentualen Anteils der Baumbedeckung")
+
 arcpy.management.CalculateField(lbm_Stadt_Baumbed, "Baumbed_Ant", "(!Baumbed_Area!/!AREA!)*100", "PYTHON3")
 
-# AUS DEM PROZENTUALEN ANTEIL DER BAUMBEDECKUNG KANN FÜR JEDES POLYGON DIE BAUMANTEILSKLASSEN ERMITTELT WERDEN ...
-# ... DIE BAUMANTEILSKLASSE IST NACH ZARDO ET AL. (2017) FOLGENDERMASSEN FESTGELEGT: 0, 20, 40, 60, 80, 100 PROZENT.
-# ... !  ACHTUNG, der oberste Wert (im Moment 151) muss bei der Berechnung für Gesamtdeutschland eventuell nochmal angepasst werden ! ...
+# FROM THE PERCENTAGE OF TREE COVER, THE TREE COVER CLASSES CAN BE DETERMINED FOR EACH POLYGON 
+    # ACCORDING TO ZARDO ET AL. (2017), THE TREE COVER PERCENTAGE CLASS IS DEFINED AS FOLLOWS: 0, 20, 40, 60, 80, 100 PERCENT.
+       # !  ATTENTION, the top value (at the moment 151) may need to be adjusted again when calculating for all of Germany ! ...
+
+# AUS DEM PROZENTUALEN ANTEIL DER BAUMBEDECKUNG KANN FÜR JEDES POLYGON DIE BAUMANTEILSKLASSEN ERMITTELT WERDEN
+    # DIE BAUMANTEILSKLASSE IST NACH ZARDO ET AL. (2017) FOLGENDERMASSEN FESTGELEGT: 0, 20, 40, 60, 80, 100 PROZENT.
+    # !  ACHTUNG, der oberste Wert (im Moment 151) muss bei der Berechnung für Gesamtdeutschland eventuell nochmal angepasst werden ! 
+
+
+print("Create a field in which the tree share class is assigned")
 print("Erstellen eines Feldes in dem die Baumanteilsklasse zugewiesen wird")
 if len(arcpy.ListFields(lbm_Stadt_Baumbed, "Baumbed_Klasse")) > 0:
-    print("Feld schon vorhanden")
+    print("Field already exists / Feld schon vorhanden")
 else:
     arcpy.AddField_management(lbm_Stadt_Baumbed, "Baumbed_Klasse", "LONG", "","", "", "", "NULLABLE", "", "")
 
+# Tree coverage values between >=80 and 100 (and beyond, values above 100 result from coarse grid resolution of the urban green grid), 
+# are assigned to class "100
+# proportion values between 60 and 80 are assigned to the class "80
+
+# 20: up to 20 percent
+# 40: up to 40 percent
+# 60: up to 60 percent
+# 80: up to 80 percent
+# 100: up to 100 percent    
+        
 # Baumanteilswerten zwischen >=80 und 100 (und darüber hinaus, Werte über 100 entstehen durch grobe Rasterauflösung des Stadtgrünrasters), 
 # werden der Klasse "100" zugewiesen
 # Anteilswerten zwischen 60 und 80 werden der Klasse "80" zugewiesen
@@ -386,6 +407,22 @@ codeblock = """def test(Anteil, Klasse):
 
 arcpy.CalculateField_management(lbm_Stadt_Baumbed, "Baumbed_Klasse", expression, "", codeblock)
 
+# LIMITATION OF THE METHOD: THE TREE PROPORTION CALCULATION FROM THE RASTER DATASET OF THE URBAN GREEN IS INACCURATE.
+# BECAUSE A TRANSFER OF THE COARSE RASTER VALUES TO THE MORE ACCURATE VECTOR DATA SET OF THE LBM-DE TAKES PLACE.
+# IN THIS WAY, TREE COVER PERCENTAGES ABOVE 100 PERCENT SOMETIMES OCCUR FOR VERY SMALL LBM-DE POLYGONS
+# THEREFORE IT IS INVESTIGATED, IF THE ELIMINATION (INCLUSION OF AREAS LARGER THAN 100 KM2) CAN SOLVE THESE ERRORS SOMEWHAT
+
+# POSSIBLY THE CALCULATED TREE COVER PERCENTAGE COULD BE RECONCILED WITH THE PROVIDED COLUMN FOR THE VEGETATION PERCENTAGE IN THE LBM-EN
+
+# DETERMINATION OF THE AREA SIZE OVER 2 HECTARES / UNDER 2 HECTARES
+# This is done only for unsealed areas (open ground, heterogeneous, water, grass, forest) 
+
+# 1) dissolve all neighboring areas that are not sealed, determine an area size from them and assign whether this dissolved area is below 2 hectares (value 0) 
+# and over 2 ha (value 1) is large
+# 2) then append the information about the (dissolvte) area size (0,1) to the individual (undissolvte areas) as a new column (column under 2ha/over2ha)
+# 3) then assign the CCA value over the column under 2ha/over2ha and the column of the tree proportion of the individual areas via function "UpdateCursor
+
+
 # EINSCHRÄNKUNG DES VERFAHRENS: DIE BAUMANTEILSBERECHNUNG AUS DEM RASTERDATENSATZ DES STADTGRÜNS IST UNGENAU
 # DA EINE ÜBERTRAGUNG DER GROBEN RASTERWERTE AUF DEN GENAUEREN VEKTORDATENSATZ DES LBM-DE STATTFINDET.
 # AUF DIESE WEISE KOMMT ES TEILWEISE BEI SEHR KLEINEN LBM-DE-POLYGONEN ZU BAUMBEDECKUNGSANTEILEN ÜBER 100 PROZENT
@@ -401,36 +438,42 @@ arcpy.CalculateField_management(lbm_Stadt_Baumbed, "Baumbed_Klasse", expression,
 # 2) anschließend die Information über die (dissolvte)  Flächengröße (0,1) den einzelnen (undissolvten Flächen) als neue Spalte anhängen (Spalte unter 2ha/über2ha)
 # 3) anschließend über die Spalte unter 2ha/über2ha und  die Spalte des Baumanteils der einzelnen Flächen den CCA-Wert zuweisen über Funktion "UpdateCursor"
 
+print("Extraction of the unsealed LBM-DE areas")
 print("Extraktion der unversiegelten LBM-DE-Flächen")
 BD_unversiegelt = output_gdb_2 + "\\BD_unversiegelt"
 arcpy.Select_analysis(lbm_Stadt_Baumbed, BD_unversiegelt, "BD NOT IN ('V')")
 
+print("Dissolve of the unsealed surfaces")
 print("Dissolven der unversiegelten Flächen")
 BD_unversiegelt_dis = output_gdb_2 + "\\BD_unversiegelt_dis"
 arcpy.analysis.PairwiseDissolve(BD_unversiegelt, BD_unversiegelt_dis, "BD", "", "SINGLE_PART")
 
-# Feld hinzufügen mit der Information ob die Fläche über 2 ha oder unter 2 ha groß ist
-print("Feld hinzufügen mit der Information ob über 2ha oder unter 2 ha")
+print("Add field with information if polygon is greater than  2 ha or smaller 2 ha")
+print("Feld hinzufügen mit der Information ob die Fläche größer 2ha oder kleiner 2 ha ist")
 if len(arcpy.ListFields(BD_unversiegelt_dis, "Ueber2ha_unter2ha")) > 0:
-    print("Feld schon vorhanden")
+    print("Field already exists / Feld schon vorhanden")
 else:
     arcpy.AddField_management(BD_unversiegelt_dis, "Ueber2ha_unter2ha", "LONG", "","", "", "", "NULLABLE", "", "")
 
 with arcpy.da.UpdateCursor(BD_unversiegelt_dis, ['Shape_Area', 'Ueber2ha_unter2ha']) as cursorCLC:
     for rowCLC in cursorCLC:
-        if rowCLC[0] < 20000:        # Flächen unter 2 ha (20.000 m²) erhalten Wert "0"
+        if rowCLC[0] < 20000:        # Areas under 2 ha (20,000 m²) receive a value of "0"/ Flächen unter 2 ha (20.000 m²) erhalten Wert "0"
             rowCLC[1] = 0
-        elif rowCLC[0] > 20000:      # Flächen über 2 ha (20.000 m²) erhalten Wert "1"
+        elif rowCLC[0] > 20000:      # Areas over 2 ha (20,000 m²) receive value "1" / Flächen über 2 ha (20.000 m²) erhalten Wert "1"
             rowCLC[1] = 1
 
         cursorCLC.updateRow(rowCLC)
     del rowCLC, cursorCLC
 
-# Selektion von Flächen von Flächen über 2 ha in BD_unversiegelt_dis (Select-Funktion)
+print("Selection of dissolved areas larger than 2 hectares")
 print("Selektion der dissolvten Flächen, die größer sind als 2 Hektar")
 BD_unversiegelt_dis_2ha = output_gdb_2 + "\\BD_unversiegelt_2ha"
 arcpy.Select_analysis(BD_unversiegelt_dis, BD_unversiegelt_dis_2ha, "Ueber2ha_unter2ha = 1")
 arcpy.management.DeleteField(BD_unversiegelt_dis_2ha, "BD")
+
+# via Identity append the columns of Selected 2ha areas to lbm_City_Treebed.
+# was tested by comparing the areas marked by the Identity feature in lbm_City_Treebed with the area size
+# of the selected areas from the dissolve feature were compared.
 
 # über Identity die Spalten von Selektierten 2ha Flächen an lbm_Stadt_Baumbed anhängen
 # wurde getestet, indem die durch die Identity-Funktion gekennzeichneten Flächen in lbm_Stadt_Baumbed mit der Flächengröße
@@ -442,8 +485,8 @@ arcpy.analysis.Identity(lbm_Stadt_Baumbed, BD_unversiegelt_dis_2ha, lbm_Stadt_Ba
 lbm_Stadt_Baumbed_2ha_sing = output_gdb_2 + "\\lbm_Stadt_Baumbedeck_2ha_sing"
 arcpy.management.MultipartToSinglepart(lbm_Stadt_Baumbed_2ha, lbm_Stadt_Baumbed_2ha_sing)
 
-
-# Versiegelten Flächen größer als 2 ha den Wert 1 zuordnen
+print("Assign the value 1 to sealed areas larger than 2 ha")
+print("Versiegelten Flächen größer als 2 ha den Wert 1 zuordnen")
 with arcpy.da.UpdateCursor(lbm_Stadt_Baumbed_2ha_sing, ['Shape_Area', 'BD', 'Ueber2ha_unter2ha']) as cursorCLC:
     for rowCLC in cursorCLC:
         if rowCLC[0] < 20000 and rowCLC[1] == 'V':        # Flächen unter 2 ha (20.000 m²) erhalten Wert "0"
@@ -454,12 +497,15 @@ with arcpy.da.UpdateCursor(lbm_Stadt_Baumbed_2ha_sing, ['Shape_Area', 'BD', 'Ueb
         cursorCLC.updateRow(rowCLC)
     del rowCLC, cursorCLC
 
-# Feld für Kühlkapazität anhängen (CCA)
+print("Append field for Climate Cooling Assessment value CCA")
 print("Feld für Wert des Climate Cooling Assessments anhängen CCA")
 if len(arcpy.ListFields(lbm_Stadt_Baumbed_2ha_sing, "CCA")) > 0:
-    print("Feld schon vorhanden")
+    print("Field already exists / Feld schon vorhanden")
 else:
     arcpy.AddField_management(lbm_Stadt_Baumbed_2ha_sing, "CCA", "LONG", "","", "", "", "NULLABLE", "", "")
+
+# Assign cooling capacity values
+# Deviating from Zardo, sealed areas with 0-20 percent tree cover always receive the value 11, regardless of their size, instead of 20
 
 # Kühlkapazitätswerte zuweisen
 # Abweichend von Zardo erhalten versiegelte Flächen mit 0-20 Prozent Baumbedeckung ungeachtet von ihrer Größe immer den Wert 11, statt 20
@@ -612,7 +658,6 @@ print("Selektieren von Flächen grösser 2 ha")
 CCA_groesser_80_2ha_dis = output_gdb_3 + "\\CCA_groesser_80_2ha_dis"
 arcpy.Select_analysis(CCA_groesser_80_dis, CCA_groesser_80_2ha_dis, "Shape_Area >= 20000")
 
-print("Puffern")
 CCA_groesser_80_dis_puf = output_gdb_3 + "\\CCA_groesser_80_dis_puf_100"
 arcpy.analysis.Buffer(CCA_groesser_80_2ha_dis, CCA_groesser_80_dis_puf, 100, "OUTSIDE_ONLY", "", "ALL", "", "PLANAR")
 
@@ -621,10 +666,8 @@ print("intersect")
 lbm_Stadt_puf = output_gdb_3 + "\\lbm_Stadt_puf"
 arcpy.analysis.Intersect([lbm_Stadt_Baumbed_2ha_sing, CCA_groesser_80_dis_puf], lbm_Stadt_puf, "ALL", "", "INPUT")
 
-print("Repair")
 arcpy.management.RepairGeometry(lbm_Stadt_puf, "DELETE_NULL", "")
 
-print("Multipart to Singlepart")
 lbm_Stadt_puf_sing = output_gdb_3 + "\\lbm_Stadt_puf_sing"
 arcpy.management.MultipartToSinglepart(lbm_Stadt_puf, lbm_Stadt_puf_sing)
 
