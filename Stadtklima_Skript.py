@@ -2,18 +2,18 @@
 
 # PYTHON-VERSION 3.6
 # SOFTWARE: PYCHARM 2019.3.1, ARCGISpro 3.0.0
-# LANGUAGE DOCUMENTATION: English & German
+# LANGUAGE DOCUMENTATION: English & German [G]
 # LANGUAGE VARIABLES: German
 
-### INDICATOR CLIMATE REGULATION IN CITIES
-### INDIKATOR ZUR KLIMAREGULATION IN STÄDTEN
+### INDICATOR TO ESTIMATE CLIMATE REGULATION IN CITIES
+### INDIKATOR ZUR BEWERTUNG DER KLIMAREGULATION IN STÄDTEN
 
 # SHORT DESCRIPTION OF THE INDICATOR
 # Using land cover type, percentage of tree canopy cover, and area size, a cooling capacity value (CCA value) is determined for each area in 
 # Cities with a population of 50,000 or more. By intersecting population data with cooling capacity information with can be determined, 
 # where residents are provided with cooling capacity by urban greenery and to what degree.
 
-# KURZBESCHREIBUNG DES INDIKATORS
+# [G] KURZBESCHREIBUNG DES INDIKATORS
 # Über den Bodenbedeckungstyp, den Anteil der Baumkronenbedeckung und der Flächengröße wird ein Kühlungskapazitätswert (CCA-Wert) für jede Fläche in 
 # Städten ab 50.000 Einwohnern ermittelt. Durch die Verschneidung von Einwohnerdaten mit der Information zur Kühlungskapazität mit kann ermittelt werden, 
 # wo Einwohner in welchem Maß mit Kühlungsleistung durch urbanes Grün versorgt werden.
@@ -27,11 +27,12 @@ arcpy.env.parallelProcessingFactor = "100%"
 arcpy.env.overwriteOutput = True
 
 # SNAP-RASTER: INSPIRE-conform-Grid (EU standard) with 10x10 m Raster Cell Size 
-# FANG-RASTER: INSPIRE-konformes Grid (nach EU-Standard) mit 10x10m Rasterzellgröße 
+# [G] FANG-RASTER: INSPIRE-konformes Grid (nach EU-Standard) mit 10x10m Rasterzellgröße 
 arcpy.env.snapRaster = "D:/tarox1_user5/OESL_P644_671/INSPIRE_Grid/inspire_grids_10.gdb/raster_10_complete" 
 arcpy.env.extent = "MAXOF"
 
 # YEAR / JAHR
+# Please replace according to the year you calculate # Bitte das Jahr entsprechend einstellen
 Jahr = "_2018"
 
 # INPUT AND OUTPUT GEODATABASES / EINGANGS- UND AUSGABE-GEODATABASES
@@ -41,8 +42,7 @@ output_gdb_1 = "E:/Meier/Stadtklima/output_1" + Jahr + ".gdb" # output for ...
 output_gdb_2 = "E:/Meier/Stadtklima/output_2" + Jahr + ".gdb" # output for ...
 output_gdb_3 = "E:/Meier/Stadtklima/output_3" + Jahr + ".gdb" # output for ...
 
-# DATA SETS - find description in ReadMe 
-# DATENSÄTZE - Beschreibung im ReadMe
+# DATA SETS - find description in ReadMe / DATENSÄTZE - Beschreibung im ReadMe
 # Please replace by own paths # Bitte eigenen Pfad angeben
 lbm_DE = "D:/tarox1_user5/OESL_P644_671/LBM/oriG/lbm_de_2018.gdb/lbm_de_2018_v2"
 Einwohnergrid = "D:/tarox1_user5/OESL_P644_671/Einwohnerzahlen/zensus2011.gdb/grid_r100_zensus11ew"
@@ -58,7 +58,7 @@ vg25_GEM_Selektion_Stadt = "D:/tarox1_user5/OESL_P644_671/VG_ATKIS/VG_25/stadte_
 # VIA SELECT BY LOCATION
     # the clip function would not work in this step, because otherwise you would select small splinters of VG25 municipalities, which were not actually
         # been included in the Urban Atlas, but partially extend into the Urban Functional Areas. Therefore the function "Select by location" was taken.
-# STÄDTE AB 50.000 EINWOHNERN (AUS VG25) INNERHALB DER URBAN ATLAS FUNCTIONAL AREAS SELEKTIEREN
+# [G] STÄDTE AB 50.000 EINWOHNERN (AUS VG25) INNERHALB DER URBAN ATLAS FUNCTIONAL AREAS SELEKTIEREN
 # ÜBER SELECT BY LOCATION
     # die Clip-Funktion würde in diesem Schritt nicht funktionieren, da man sonst kleine Splitter von VG25-Gemeinden mit selektieren würde, die eigentlich nicht
         # im Urban Atlas erfasst worden sind, aber teilweise in die Urban Functional Areas hineinragen. Daher wurde die Funktion "Select by location" genommen
@@ -72,7 +72,7 @@ arcpy.CopyFeatures_management(lyr, vg_25_sel_Stadt_SEL)
 
 # IN SOME CASES, THE VG25 COMMUNITIES ARE LARGER THAN THE URBAN-FUNCTIONAL AREAS, THEREFORE THE VG25 GEOMETRIES WHICH ARE
     # OUTSIDE THE URBAN-FUNCTIONAL-AREAS ARE REMOVED
-# TEILWEISE SIND DIE VG25-GEMEINDEN GRÖSSER ALS DIE URBAN-FUNCTIONAL AREAS, DESWEGEN WERDEN DIE VG25-GEOMETRIEN
+# [G] TEILWEISE SIND DIE VG25-GEMEINDEN GRÖSSER ALS DIE URBAN-FUNCTIONAL AREAS, DESWEGEN WERDEN DIE VG25-GEOMETRIEN
     # AUSSERHALB DER URBAN-FUNCTIONAL-AREAS ENTFERNT
 
 vg_25_sel_Stadt_UA = Eingangsdaten_gdb + "\\vg_25_sel_Stadt_UA"
@@ -96,7 +96,8 @@ arcpy.Eliminate_management(lbm_Stadt_lyr, lbm_Stadt, "AREA", '"Shape_Area" > 100
 lbm_Stadt_sing = Eingangsdaten_gdb + "\\lbm_Stadt_sing" + Jahr
 arcpy.management.MultipartToSinglepart(lbm_Stadt, lbm_Stadt_sing)
 
-# LAND COVER TYPES (BD) (SEE ZARDO ET AL. 2017 AND SYRBE ET AL. 2022)/ BODENBEDECKUNGSTYP (BD) (SIEHE ZARDO ET AL. 2017 UND SYRBE ET AL. 2022):
+# LAND COVER TYPES (BD) 
+# [G] BODENBEDECKUNGSTYP (BD)
      # V: sealed/versiegelt
      # O: open soil / offener Boden
      # H: heterogeneous / heterogen
@@ -189,7 +190,7 @@ with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
 
 # DETERMINATION OF THE PROPORTION OF TREES IN EACH CLC-CLASS IN LBM-DE - FOR THIS PURPOSE, INFORMATION ON TREES FROM THE
 # URBAN GREEN MONITORING RASTER DATASET WAS USED, WHICH HAS FOLLOWING CLASSES
-# ERMITLUNG DES BAUMANTEILS JEDER CLC-KLASSE IM LBM-DE - HIERZU WURDEN INFORMATIONEN ZU BÄUMEN AUS DEM
+# [G] ERMITLUNG DES BAUMANTEILS JEDER CLC-KLASSE IM LBM-DE - HIERZU WURDEN INFORMATIONEN ZU BÄUMEN AUS DEM
 # STADTGRÜNMONITORING-RASTERDATENSATZ VERWENDET, DAS FOLGENDE KLASSEN ENTHÄLT
 
      # 1: Built-up / bebaut
@@ -203,8 +204,7 @@ with arcpy.da.UpdateCursor(lbm_Stadt_sing, ['CLC18', 'BD']) as cursorCLC:
         
 # COMBINE BOTH DATASETS WITH TREE COVER INFORMATION INTO ONE DATASET (STREET TREE LAYER WITH TREE DATA FROM URBAN GREENING RASTER)
 # IN CASE OF OVERLAYS, THE TREE DATA FROM THE URBAN GREEN MONITORING LAYER HAVE A HIGHER PRIORITY THAN THE STREET TREE LAYER
-
-# BEIDE DATENSÄTZE MIT BAUMBEDECKUNGSINFORMATIONEN IN EINEN DATENSATZ VEREINIGEN (STREET TREE LAYER MIT BAUMDATEN AUS DEM STADTGRUENRASTER KOMBINIEREN)
+# [G] BEIDE DATENSÄTZE MIT BAUMBEDECKUNGSINFORMATIONEN IN EINEN DATENSATZ VEREINIGEN (STREET TREE LAYER MIT BAUMDATEN AUS DEM STADTGRUENRASTER KOMBINIEREN)
 # BEI UEBERLAGERUNGEN HABEN DIE BAUMDATEN AUS DEM STADTGRÜN-RASTER DIE HOEHERE PRIORITAET, ALS DER STREET TREE LAYER
         
 print("Convert Streettree layer to 10x10m grid and insert into urban green grid as category 9")
@@ -239,12 +239,12 @@ path_Stadtgruen_Streettree = output_gdb_2 + "\\Stadtgruenrast_3_4_8_9"
 mosaik_dataset = [path_recl_Stadtgruen_3_4, Street_Tree_rast, path_recl_Stadtgruen_8]
 arcpy.management.MosaicToNewRaster(mosaik_dataset, output_gdb_2, "Stadtgruenrast_3_4_8_9", "", "4_BIT", "10", "1", "FIRST", "")
 
-# DETERMINE HOW MANY GRADUATE CELLS OF CLASS 3 (BROAD-LEAF TREE), 4 (CONIFEROUS TREE), 9 (STREET TREE LAYER) AND 8 (BUILT-UP BUT CONSIDERABLY VEGETATED). 
+# DETERMINE HOW MANY GRADUATE CELLS OF CLASS 3 (BROAD-LEAF TREE), 4 (CONIFEROUS TREE), 9 (COPERNICUS STREET TREE LAYER) AND 8 (BUILT-UP BUT CONSIDERABLY VEGETATED). 
     # EACH IN WHICH LBM-DE AREA LIE AND CALCULATE THE AREA SIZE
  # IN ORDER TO DO THIS, THE LBM-DE-POLYGON FILE IS CONVERTED TO  10X10 m RASTER (SAME RESOLUTION AS THE URBAN GREEN RASTER)
     # EACH GRID PIXEL WAS ASSIGNED THE ID VALUE OF THE RESPECTIVE LBM-DE POLYGON
     
-# ERMITTELN WIEVIELE RASTERZELLEN DER KLASSE 3 (LAUBBAUM), 4 (NADELBAUM), 9 (Street Tree Layer) UND 8 (BEBAUT - STARK DURCHGRÜNT) 
+# [G] ERMITTELN WIEVIELE RASTERZELLEN DER KLASSE 3 (LAUBBAUM), 4 (NADELBAUM), 9 (Street Tree Layer) UND 8 (BEBAUT - STARK DURCHGRÜNT) 
     # JEWEILS IN WELCHER LBM-DE FLÄCHE LIEGEN UND DIE FLÄCHENGRÖSSE BERECHNEN
  # DAHER WURDE DAS LBM-DE IN EIN 10x10m RASTER UMGEWANDELT (GLEICHE AUFLÖSUNG, WIE DAS STADTGRÜNRASTER)
     # JEDEM RASTERPIXEL WURDE DER ID-WERT DES JEWEILIGEN LBM-DE-POLYGONS ZUGEWIESEN
@@ -290,7 +290,7 @@ arcpy.CalculateField_management(tabl_kl_3_4_8_9, "VALUE_4_Area", "!VALUE_4!", "P
     # ON AVERAGE CONTAINS ONLY 18 PERCENT TREE COVER
     # THEREFORE, THE AREA SIZE (10x10m = 100m²) OF CLASS 8 IS MULTIPLIED BY 0.18
     
-# VORANGEGANGENE ANALYSEN MIT GRÜNVOLUMENDATEN VON FÜNF STÄDTEN ZEIGTEN, DASS DIE KLASSE 8 (BEBAUT, STARK DURCHGRÜN) 
+# [G] VORANGEGANGENE ANALYSEN MIT GRÜNVOLUMENDATEN VON FÜNF STÄDTEN ZEIGTEN, DASS DIE KLASSE 8 (BEBAUT, STARK DURCHGRÜN) 
     # IM DURCHSCHNITT NUR 18 PROZENT BAUMBEDECKUNG BEINHALTET
     # DAHER WIRD DIE FLÄCHENGRÖSSE (10x10m = 100m²) DER KLASSE 8 MIT 0,18 MULTIPLIZIERT
 
@@ -316,7 +316,8 @@ else:
 arcpy.management.CalculateField(tabl_kl_3_4_8_9, "Baumbed_Area", "!VALUE_3_Area!+!VALUE_4_Area!+!VALUE_8_Area!+!VALUE_9_Area!", "PYTHON3")
 
 # CREATE AN UNCHANGEABLE COLUMN WITH THE AREA SIZE IN THE LBM-DE (THE SHAPE_AREA FIELD CAN CHANGE DYNAMICALLY)
-# IM LBM-DE EINE UNVERÄNDERLICHE SPALTE MIT DER FLÄCHENGRÖSSE ANLEGEN (DIE SHAPE_AREA-SPALTE KANN SICH DYNAMISCH VERÄNDERN) 
+# [G] IM LBM-DE EINE UNVERÄNDERLICHE SPALTE MIT DER FLÄCHENGRÖSSE ANLEGEN (DIE SHAPE_AREA-SPALTE KANN SICH DYNAMISCH VERÄNDERN) 
+
 if len(arcpy.ListFields(lbm_Stadt_sing, "AREA")) > 0:
     print("Field already exists / Feld schon vorhanden")
 else:
@@ -338,7 +339,8 @@ Felder_loeschen = list(set(FCfields) - set(nicht_loeschen))
 arcpy.DeleteField_management(lbm_Stadt_sing, Felder_loeschen)
 
 # CALCULATION OF THE PERCENTAGE OF TREE COVER (AREA OF TREE COVER IN LBM-DE-POLYGON/TOTAL AREA OF POLYGON)
-# BERECHNUNG DES PROZENTUALEN ANTEILS DER BAUMBEDECKUNG (FLÄCHE DER BAUMBEDECKUNG IM LBM-DE-POLYGON/GESAMTFLÄCHE DES POLYGONS)
+
+# [G] BERECHNUNG DES PROZENTUALEN ANTEILS DER BAUMBEDECKUNG (FLÄCHE DER BAUMBEDECKUNG IM LBM-DE-POLYGON/GESAMTFLÄCHE DES POLYGONS)
 
 print("Calculation of the percentage of tree cover")
 print("Berechnung des prozentualen Anteils der Baumbedeckung")
@@ -353,7 +355,7 @@ arcpy.management.CalculateField(lbm_Stadt_Baumbed, "Baumbed_Ant", "(!Baumbed_Are
     # ACCORDING TO ZARDO ET AL. (2017), THE TREE COVER PERCENTAGE CLASS IS DEFINED AS FOLLOWS: 0, 20, 40, 60, 80, 100 PERCENT.
        # !  ATTENTION, the top value (at the moment 151) may need to be adjusted again when calculating for all of Germany ! ...
 
-# AUS DEM PROZENTUALEN ANTEIL DER BAUMBEDECKUNG KANN FÜR JEDES POLYGON DIE BAUMANTEILSKLASSEN ERMITTELT WERDEN
+# [G] AUS DEM PROZENTUALEN ANTEIL DER BAUMBEDECKUNG KANN FÜR JEDES POLYGON DIE BAUMANTEILSKLASSEN ERMITTELT WERDEN
     # DIE BAUMANTEILSKLASSE IST NACH ZARDO ET AL. (2017) FOLGENDERMASSEN FESTGELEGT: 0, 20, 40, 60, 80, 100 PROZENT.
     # !  ACHTUNG, der oberste Wert (im Moment 151) muss bei der Berechnung für Gesamtdeutschland eventuell nochmal angepasst werden ! 
 
@@ -368,17 +370,15 @@ else:
 # Tree coverage values between >=80 and 100 (and beyond, values above 100 result from coarse grid resolution of the urban green grid), 
 # are assigned to class "100
 # proportion values between 60 and 80 are assigned to the class "80
-
 # 20: up to 20 percent
 # 40: up to 40 percent
 # 60: up to 60 percent
 # 80: up to 80 percent
 # 100: up to 100 percent    
         
-# Baumanteilswerten zwischen >=80 und 100 (und darüber hinaus, Werte über 100 entstehen durch grobe Rasterauflösung des Stadtgrünrasters), 
+# [G] Baumanteilswerten zwischen >=80 und 100 (und darüber hinaus, Werte über 100 entstehen durch grobe Rasterauflösung des Stadtgrünrasters), 
 # werden der Klasse "100" zugewiesen
 # Anteilswerten zwischen 60 und 80 werden der Klasse "80" zugewiesen
-
 # 20: bis 20 Prozent
 # 40: bis 40 Prozent
 # 60: bis 60 Prozent
@@ -410,29 +410,21 @@ arcpy.CalculateField_management(lbm_Stadt_Baumbed, "Baumbed_Klasse", expression,
 # LIMITATION OF THE METHOD: THE TREE PROPORTION CALCULATION FROM THE RASTER DATASET OF THE URBAN GREEN IS INACCURATE.
 # BECAUSE A TRANSFER OF THE COARSE RASTER VALUES TO THE MORE ACCURATE VECTOR DATA SET OF THE LBM-DE TAKES PLACE.
 # IN THIS WAY, TREE COVER PERCENTAGES ABOVE 100 PERCENT SOMETIMES OCCUR FOR VERY SMALL LBM-DE POLYGONS
-# THEREFORE IT IS INVESTIGATED, IF THE ELIMINATION (INCLUSION OF AREAS LARGER THAN 100 KM2) CAN SOLVE THESE ERRORS SOMEWHAT
-
-# POSSIBLY THE CALCULATED TREE COVER PERCENTAGE COULD BE RECONCILED WITH THE PROVIDED COLUMN FOR THE VEGETATION PERCENTAGE IN THE LBM-EN
 
 # DETERMINATION OF THE AREA SIZE OVER 2 HECTARES / UNDER 2 HECTARES
 # This is done only for unsealed areas (open ground, heterogeneous, water, grass, forest) 
-
 # 1) dissolve all neighboring areas that are not sealed, determine an area size from them and assign whether this dissolved area is below 2 hectares (value 0) 
 # and over 2 ha (value 1) is large
 # 2) then append the information about the (dissolvte) area size (0,1) to the individual (undissolvte areas) as a new column (column under 2ha/over2ha)
 # 3) then assign the CCA value over the column under 2ha/over2ha and the column of the tree proportion of the individual areas via function "UpdateCursor
 
 
-# EINSCHRÄNKUNG DES VERFAHRENS: DIE BAUMANTEILSBERECHNUNG AUS DEM RASTERDATENSATZ DES STADTGRÜNS IST UNGENAU
+# [G] EINSCHRÄNKUNG DES VERFAHRENS: DIE BAUMANTEILSBERECHNUNG AUS DEM RASTERDATENSATZ DES STADTGRÜNS IST UNGENAU
 # DA EINE ÜBERTRAGUNG DER GROBEN RASTERWERTE AUF DEN GENAUEREN VEKTORDATENSATZ DES LBM-DE STATTFINDET.
 # AUF DIESE WEISE KOMMT ES TEILWEISE BEI SEHR KLEINEN LBM-DE-POLYGONEN ZU BAUMBEDECKUNGSANTEILEN ÜBER 100 PROZENT
-# DESWEGEN WIRD UNTERSUCHT, OB DIE ELIMINIERUNG (EINGLIEDERUNG VON FLÄCHEN GRÖSSER 100 KM2) DIESE FEHLER ETWAS BEHEBEN KANN
 
-# EVENTUELL KÖNNTE MAN DEN BERECHNETEN BAUMBEDECKUNGSANTEIL MIT DER MITGELIEFERTEN SPALTE ZUM VEGETATIONSANTEIL IM LBM-DE NOCHMAL ABGLEICHEN
-
-# ERMITTLUNG DER FLÄCHENGRÖSSE ÜBER 2 HEKTAR / UNTER 2 HEKTAR
+# [G] ERMITTLUNG DER FLÄCHENGRÖSSE ÜBER 2 HEKTAR / UNTER 2 HEKTAR
 # Dies wird nur für unversiegelte Flächen gemacht (Offener Boden, heterogen, Wasser, Gras, Wald) 
-
 # 1) dissolven aller benachbarter Flächen, die nicht versiegelt sind, daraus eine Flächengröße ermitteln und zuweisen, ob diese dissolvte Fläche unter 2 ha (Wert 0) 
 # und über 2 ha (Wert 1) groß ist
 # 2) anschließend die Information über die (dissolvte)  Flächengröße (0,1) den einzelnen (undissolvten Flächen) als neue Spalte anhängen (Spalte unter 2ha/über2ha)
@@ -475,7 +467,7 @@ arcpy.management.DeleteField(BD_unversiegelt_dis_2ha, "BD")
 # was tested by comparing the areas marked by the Identity feature in lbm_City_Treebed with the area size
 # of the selected areas from the dissolve feature were compared.
 
-# über Identity die Spalten von Selektierten 2ha Flächen an lbm_Stadt_Baumbed anhängen
+# [G] über Identity die Spalten von Selektierten 2ha Flächen an lbm_Stadt_Baumbed anhängen
 # wurde getestet, indem die durch die Identity-Funktion gekennzeichneten Flächen in lbm_Stadt_Baumbed mit der Flächengröße
 # der selektierten Flächen aus dem dissolven Feature verglichen wurden
 
@@ -505,10 +497,10 @@ else:
     arcpy.AddField_management(lbm_Stadt_Baumbed_2ha_sing, "CCA", "LONG", "","", "", "", "NULLABLE", "", "")
 
 # Assign cooling capacity values
-# Deviating from Zardo, sealed areas with 0-20 percent tree cover always receive the value 11, regardless of their size, instead of 20
+# Deviating from Zardo et al. (2017), sealed areas with 0-20 percent tree cover always receive the value 11, regardless of their size, instead of 20
 
-# Kühlkapazitätswerte zuweisen
-# Abweichend von Zardo erhalten versiegelte Flächen mit 0-20 Prozent Baumbedeckung ungeachtet von ihrer Größe immer den Wert 11, statt 20
+# [G] Kühlkapazitätswerte zuweisen
+# Abweichend von Zardo et al. (2017) erhalten versiegelte Flächen mit 0-20 Prozent Baumbedeckung, ungeachtet von ihrer Größe immer den Wert 11, anstatt 20
 
 expression_CCA = "test(!Baumbed_Klasse!, !BD!, !Ueber2ha_unter2ha!)"
 codeblock_CCA = """def test(Baumbed_Klasse, Bodenbed, Ueber_2ha):
@@ -646,23 +638,23 @@ codeblock_CCA = """def test(Baumbed_Klasse, Bodenbed, Ueber_2ha):
 
 arcpy.CalculateField_management(lbm_Stadt_Baumbed_2ha_sing, "CCA", expression_CCA, "", codeblock_CCA)
 
-# Dissolven der Klassen über 80, diese erhalten einen Puffer von 100 METERN
+print("Dissolve of unsealed areas with cooling capacity values above 80 and larger than 2 ha, they are buffered by 100 m additionally")
+print("Dissolven der unversiegelten Flächen mit Kühlkapazitätswerten über 80 und größer als 2 ha, diese werden zusätzlich mit 100 m gepuffert")
 CCA_groesser_80 = output_gdb_3 + "\\CCA_groesser_80"
 arcpy.Select_analysis(lbm_Stadt_Baumbed_2ha_sing, CCA_groesser_80, "CCA > 80")
 
-print("Dissolven der unversiegelten Flächen über 80")
+
 CCA_groesser_80_dis = output_gdb_3 + "\\CCA_groesser_80_dis"
 arcpy.analysis.PairwiseDissolve(CCA_groesser_80, CCA_groesser_80_dis, "", "", "SINGLE_PART")
 
-print("Selektieren von Flächen grösser 2 ha")
 CCA_groesser_80_2ha_dis = output_gdb_3 + "\\CCA_groesser_80_2ha_dis"
 arcpy.Select_analysis(CCA_groesser_80_dis, CCA_groesser_80_2ha_dis, "Shape_Area >= 20000")
 
 CCA_groesser_80_dis_puf = output_gdb_3 + "\\CCA_groesser_80_dis_puf_100"
 arcpy.analysis.Buffer(CCA_groesser_80_2ha_dis, CCA_groesser_80_dis_puf, 100, "OUTSIDE_ONLY", "", "ALL", "", "PLANAR")
 
-# Flächen innerhalb der Puffer selektieren
-print("intersect")
+print("Select areas within the 100 m buffers")
+print("Flächen innerhalb der 100 m - Puffer selektieren")
 lbm_Stadt_puf = output_gdb_3 + "\\lbm_Stadt_puf"
 arcpy.analysis.Intersect([lbm_Stadt_Baumbed_2ha_sing, CCA_groesser_80_dis_puf], lbm_Stadt_puf, "ALL", "", "INPUT")
 
@@ -671,15 +663,21 @@ arcpy.management.RepairGeometry(lbm_Stadt_puf, "DELETE_NULL", "")
 lbm_Stadt_puf_sing = output_gdb_3 + "\\lbm_Stadt_puf_sing"
 arcpy.management.MultipartToSinglepart(lbm_Stadt_puf, lbm_Stadt_puf_sing)
 
-# Feld für Kühlkapazität anhängen (CCA)
+# Add field for cooling capacity (CCA)
+# [G] Feld für Kühlkapazität anhängen (CCA)
+
 print("Feld für Wert des Climate Cooling Assessments anhängen CCA")
 if len(arcpy.ListFields(lbm_Stadt_puf_sing, "CCA_puf")) > 0:
     print("Feld schon vorhanden")
 else:
     arcpy.AddField_management(lbm_Stadt_puf_sing, "CCA_puf", "LONG", "", "", "", "", "NULLABLE", "", "")
 
-# Flächen im Bereich des Puffers mit CCA-Werten kleiner 81 erhalten eine Erhöhung des CCA-Wertes um 20 (der CCA-Wert verfügt über keine Kommastelle)
-# Flächen mit CCA-Werten über 81 im Bereich des Puffers wird kein neuer Wert zugewiesen, sie behalten ihren alten Wert
+# Areas in the area of the buffer with CCA values smaller than 81 get an increase of the CCA value by 20 (the CCA value has no decimal place)
+# Areas with CCA values above 81 that lie within the buffer are not assigned a new value, they keep their old value
+
+# [G] Flächen im Bereich des Puffers mit CCA-Werten kleiner 81 erhalten eine Erhöhung des CCA-Wertes um 20 (der CCA-Wert verfügt über keine Kommastelle)
+# Flächen mit CCA-Werten über 81, die innerhalb des Puffers liegen wird kein neuer Wert zugewiesen, sie behalten ihren alten Wert
+
 with arcpy.da.UpdateCursor(lbm_Stadt_puf_sing, ['CCA', 'CCA_puf']) as cursorCLC:
     for rowCLC_CCA80 in cursorCLC:
         if rowCLC_CCA80[0] < 81:
@@ -689,9 +687,15 @@ with arcpy.da.UpdateCursor(lbm_Stadt_puf_sing, ['CCA', 'CCA_puf']) as cursorCLC:
         cursorCLC.updateRow(rowCLC_CCA80)
     #del rowCLC_CCA80, cursorCLC
 
-# Füge die gepufferten Flächen mit den Restflächen zusammen, radiere dazu die gepufferten Flächen aus dem Urpsrungsdatensatz weg (erase)
-# Füge anschließend das radierte Feature mit dem gepufferten Feature zusammen (merge)
-# Übertrage dort, wo sich keine Pufferflächen befinden den CCA-Wert der ursprünglichen Flächen in die CCA-Puf_Spalte
+# Merge the buffered areas with the original dataset: 
+# 1) Erase those areas from the original dataset which overlap with the buffer area.
+# 2) Then merge the erased feature with the buffered feature.
+# 3) Give the areas that were not in the buffer area the CCA value from the original dataset (insert into CCA_Puf - Column).  
+    
+# [G] Füge die gepufferten Flächen mit dem Ursprungsdatensatz zusammen:
+# 1) Radiere dazu die Flächen aus dem Urpsrungsdatensatz weg (erase), die sich im Bereich des Puffers befinden.
+# 2) Füge anschließend das radierte Feature mit dem gepufferten Feature zusammen (merge).
+# 3) Gebe den Flächen, die sich nicht im Bereich der Pufferflächen befanden den CCA-Wert aus dem Ursprungsdatensatz wieder (einfügen in die CCA_Puf-Spalte)
 
 lbm_Stadt_erase = output_gdb_3 + "\\lbm_Stadt_erase"
 arcpy.analysis.Erase(lbm_Stadt_Baumbed_2ha_sing, lbm_Stadt_puf_sing, lbm_Stadt_erase, "")
@@ -711,7 +715,9 @@ codeblock_CCA_puf = """def test(CCA_puf, CCA):
 
 arcpy.CalculateField_management(lbm_Stadt_merge_sing, "CCA_puf", expression_CCA_puf, "", codeblock_CCA_puf)
 
-# Durchschnittlichen gewichteten Mittelwert der Kühlkapazität für jede Stadt berechnen
+# Calculate weighted average cooling capacity for each city
+# [G] Durchschnittlichen gewichteten Mittelwert der Kühlkapazität für jede Stadt berechnen
+
 print("ID der Städte anhängen")
 lbm_Stadt_merge_AGS = output_gdb_3 + "\\lbm_Stadt_merge_AGS"
 arcpy.analysis.Intersect([lbm_Stadt_merge_sing, vg_25_sel_Stadt_UA], lbm_Stadt_merge_AGS, "ALL", "", "INPUT")
@@ -719,7 +725,9 @@ arcpy.analysis.Intersect([lbm_Stadt_merge_sing, vg_25_sel_Stadt_UA], lbm_Stadt_m
 lbm_Stadt_merge_AGS_sing = output_gdb_3 + "\\lbm_Stadt_merge_AGS_sing"
 arcpy.management.MultipartToSinglepart(lbm_Stadt_merge_AGS, lbm_Stadt_merge_AGS_sing)
 
-# Feld berechnen mit gewichteten CCA-Werten x Fläche
+# Calculate CCA-field with weighted CCA values multiplied with the area
+# CCA-Feld berechnen mit gewichteten CCA-Werten multipliziert mit der Fläche
+
 print("Feld für nach Flächengröße gewichtete CCA-Werte anhängen")
 if len(arcpy.ListFields(lbm_Stadt_merge_AGS_sing, "CCA_Area")) > 0:
     print("Feld schon vorhanden")
@@ -733,7 +741,8 @@ stat_fields_1 = [['CCA_Area', 'Sum'], ['Shape_Area', 'Sum']]
 case_fields_1 = ['GEN']               # 'GEN':  ID-Feld der Städte aus VG 25
 arcpy.Statistics_analysis(lbm_Stadt_merge_AGS_sing, tab_CCA_gew_Area, stat_fields_1, case_fields_1)
 
-# Feld berechnen mit gewichteten Mittelwert der CCA-Werte je Stadt
+# Calculate field with weighted average of CCA values per city.
+# [G] Feld berechnen mit gewichteten Mittelwert der CCA-Werte je Stadt
 print("Feld berechnen mit gewichteten Mittelwerten der CCA-Werte je Stadt")
 if len(arcpy.ListFields(tab_CCA_gew_Area, "CCA_Mean_gew")) > 0:
     print("Feld schon vorhanden")
@@ -746,8 +755,12 @@ arcpy.management.JoinField(vg_25_sel_Stadt_UA, "GEN", tab_CCA_gew_Area, "GEN")
 CCA_gew_Area_vg25_GEM_Selektion_Stadt = output_gdb_3 + "\\CCA_gew_Area_vg25_GEM"
 arcpy.CopyFeatures_management(vg_25_sel_Stadt_UA, CCA_gew_Area_vg25_GEM_Selektion_Stadt)
 
-# ANGEHÄNGTE FELDER WERDEN IM DATENSATZ VG_25_sel_Stadt_UA WIEDER ENTFERNT, DAMIT NICHT BEI JEDEM DURCHGANG DES SKRIPTES 
-# MEHR UND MEHR ZUSÄTZLICHE SPALTEN ANGEHÄNGT WERDEN
+# Appended fields will be removed in the dataset vg_25_sel_stadt_ua again, thereby no more fields will be appended everytime the script is run again. 
+# More and more additional columns are appended
+
+# [G] Angehängte Felder werden im Datensatz VG_25_sel_Stadt_UA wieder entfernt, damit nicht bei jedem neuen Durchgang des Skriptes 
+# mehr und mehr zusätzliche Spalten angehängt werden
+
 print("angehängte Felder im ursprünglichen VG_25_sel_Stadt_UA-Datensatz wieder löschen")
 FCfields = [f.name for f in arcpy.ListFields(vg_25_sel_Stadt_UA)]
 nicht_loeschen = ['ADE', 'GF', 'BSG', 'RS', 'AGS', 'SDV_RS', 'GEN', 'BEZ', 'IBZ', 'BEM', 'NBD', 'SN_L', 'SN_R', 'SN_K', 'SN_V1', 'SN_V2', 'SN_G',
