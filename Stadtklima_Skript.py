@@ -339,7 +339,6 @@ Felder_loeschen = list(set(FCfields) - set(nicht_loeschen))
 arcpy.DeleteField_management(lbm_Stadt_sing, Felder_loeschen)
 
 # CALCULATION OF THE PERCENTAGE OF TREE COVER (AREA OF TREE COVER IN LBM-DE-POLYGON/TOTAL AREA OF POLYGON)
-
 # [G] BERECHNUNG DES PROZENTUALEN ANTEILS DER BAUMBEDECKUNG (FLÄCHE DER BAUMBEDECKUNG IM LBM-DE-POLYGON/GESAMTFLÄCHE DES POLYGONS)
 
 print("Calculation of the percentage of tree cover")
@@ -367,18 +366,18 @@ if len(arcpy.ListFields(lbm_Stadt_Baumbed, "Baumbed_Klasse")) > 0:
 else:
     arcpy.AddField_management(lbm_Stadt_Baumbed, "Baumbed_Klasse", "LONG", "","", "", "", "NULLABLE", "", "")
 
-# Tree coverage values between >=80 and 100 (and beyond, values above 100 result from coarse grid resolution of the urban green grid), 
-# are assigned to class "100
-# proportion values between 60 and 80 are assigned to the class "80
+# TREE COVERAGE VALUES BETWEEN >=80 AND 100 (AND BEYOND, VALUES ABOVE 100 RESULT FROM COARSE GRID RESOLUTION OF THE URBAN GREEN GRID), 
+# ARE ASSIGNED TO CLASS "100
+# PROPORTION VALUES BETWEEN 60 AND 80 ARE ASSIGNED TO THE CLASS "80"
 # 20: up to 20 percent
 # 40: up to 40 percent
 # 60: up to 60 percent
 # 80: up to 80 percent
 # 100: up to 100 percent    
         
-# [G] Baumanteilswerten zwischen >=80 und 100 (und darüber hinaus, Werte über 100 entstehen durch grobe Rasterauflösung des Stadtgrünrasters), 
-# werden der Klasse "100" zugewiesen
-# Anteilswerten zwischen 60 und 80 werden der Klasse "80" zugewiesen
+# [G] BAUMANTEILSWERTEN ZWISCHEN >=80 UND 100 (UND DARÜBER HINAUS, WERTE ÜBER 100 ENTSTEHEN DURCH GROBE RASTERAUFLÖSUNG DES STADTGRÜNRASTERS), 
+# WERDEN DER KLASSE "100" ZUGEWIESEN
+# ANTEILSWERTEN ZWISCHEN 60 UND 80 WERDEN DER KLASSE "80" ZUGEWIESEN
 # 20: bis 20 Prozent
 # 40: bis 40 Prozent
 # 60: bis 60 Prozent
@@ -463,13 +462,13 @@ BD_unversiegelt_dis_2ha = output_gdb_2 + "\\BD_unversiegelt_2ha"
 arcpy.Select_analysis(BD_unversiegelt_dis, BD_unversiegelt_dis_2ha, "Ueber2ha_unter2ha = 1")
 arcpy.management.DeleteField(BD_unversiegelt_dis_2ha, "BD")
 
-# via Identity append the columns of Selected 2ha areas to lbm_City_Treebed.
-# was tested by comparing the areas marked by the Identity feature in lbm_City_Treebed with the area size
-# of the selected areas from the dissolve feature were compared.
+# VIA IDENTITY APPEND THE COLUMNS OF SELECTED 2HA AREAS TO LBM_CITY_TREEBED.
+# WAS TESTED BY COMPARING THE AREAS MARKED BY THE IDENTITY FEATURE IN LBM_CITY_TREEBED WITH THE AREA SIZE
+# OF THE SELECTED AREAS FROM THE DISSOLVE FEATURE WERE COMPARED.
 
-# [G] über Identity die Spalten von Selektierten 2ha Flächen an lbm_Stadt_Baumbed anhängen
-# wurde getestet, indem die durch die Identity-Funktion gekennzeichneten Flächen in lbm_Stadt_Baumbed mit der Flächengröße
-# der selektierten Flächen aus dem dissolven Feature verglichen wurden
+# [G] ÜBER IDENTITY DIE SPALTEN VON SELEKTIERTEN 2HA FLÄCHEN AN LBM_STADT_BAUMBED ANHÄNGEN
+# WURDE GETESTET, INDEM DIE DURCH DIE IDENTITY-FUNKTION GEKENNZEICHNETEN FLÄCHEN IN LBM_STADT_BAUMBED MIT DER FLÄCHENGRÖSSE
+# DER SELEKTIERTEN FLÄCHEN AUS DEM DISSOLVEN FEATURE VERGLICHEN WURDEN
 
 lbm_Stadt_Baumbed_2ha = output_gdb_2 + "\\lbm_stadt_Baumbedeck_2ha"
 arcpy.analysis.Identity(lbm_Stadt_Baumbed, BD_unversiegelt_dis_2ha, lbm_Stadt_Baumbed_2ha, "ALL", "", "NO_RELATIONSHIPS")
@@ -496,11 +495,11 @@ if len(arcpy.ListFields(lbm_Stadt_Baumbed_2ha_sing, "CCA")) > 0:
 else:
     arcpy.AddField_management(lbm_Stadt_Baumbed_2ha_sing, "CCA", "LONG", "","", "", "", "NULLABLE", "", "")
 
-# Assign cooling capacity values
-# Deviating from Zardo et al. (2017), sealed areas with 0-20 percent tree cover always receive the value 11, regardless of their size, instead of 20
+# ASSIGN COOLING CAPACITY VALUES
+# DEVIATING FROM ZARDO ET AL. (2017), SEALED AREAS WITH 0-20 PERCENT TREE COVER ALWAYS RECEIVE THE VALUE 11, REGARDLESS OF THEIR SIZE, INSTEAD OF 20
 
-# [G] Kühlkapazitätswerte zuweisen
-# Abweichend von Zardo et al. (2017) erhalten versiegelte Flächen mit 0-20 Prozent Baumbedeckung, ungeachtet von ihrer Größe immer den Wert 11, anstatt 20
+# [G] KÜHLKAPAZITÄTSWERTE ZUWEISEN
+# ABWEICHEND VON ZARDO ET AL. (2017) ERHALTEN VERSIEGELTE FLÄCHEN MIT 0-20 PROZENT BAUMBEDECKUNG, UNGEACHTET VON IHRER GRÖSSE IMMER DEN WERT 11, ANSTATT 20
 
 expression_CCA = "test(!Baumbed_Klasse!, !BD!, !Ueber2ha_unter2ha!)"
 codeblock_CCA = """def test(Baumbed_Klasse, Bodenbed, Ueber_2ha):
@@ -663,8 +662,8 @@ arcpy.management.RepairGeometry(lbm_Stadt_puf, "DELETE_NULL", "")
 lbm_Stadt_puf_sing = output_gdb_3 + "\\lbm_Stadt_puf_sing"
 arcpy.management.MultipartToSinglepart(lbm_Stadt_puf, lbm_Stadt_puf_sing)
 
-# Add field for cooling capacity (CCA)
-# [G] Feld für Kühlkapazität anhängen (CCA)
+# ADD FIELD FOR COOLING CAPACITY (CCA)
+# [G] FELD FÜR KÜHLKAPAZITÄT ANHÄNGEN (CCA)
 
 print("Feld für Wert des Climate Cooling Assessments anhängen CCA")
 if len(arcpy.ListFields(lbm_Stadt_puf_sing, "CCA_puf")) > 0:
@@ -672,11 +671,11 @@ if len(arcpy.ListFields(lbm_Stadt_puf_sing, "CCA_puf")) > 0:
 else:
     arcpy.AddField_management(lbm_Stadt_puf_sing, "CCA_puf", "LONG", "", "", "", "", "NULLABLE", "", "")
 
-# Areas in the area of the buffer with CCA values smaller than 81 get an increase of the CCA value by 20 (the CCA value has no decimal place)
-# Areas with CCA values above 81 that lie within the buffer are not assigned a new value, they keep their old value
+# AREAS IN THE AREA OF THE BUFFER WITH CCA VALUES SMALLER THAN 81 GET AN INCREASE OF THE CCA VALUE BY 20 (THE CCA VALUE HAS NO DECIMAL PLACE)
+# AREAS WITH CCA VALUES ABOVE 81 THAT LIE WITHIN THE BUFFER ARE NOT ASSIGNED A NEW VALUE, THEY KEEP THEIR OLD VALUE
 
-# [G] Flächen im Bereich des Puffers mit CCA-Werten kleiner 81 erhalten eine Erhöhung des CCA-Wertes um 20 (der CCA-Wert verfügt über keine Kommastelle)
-# Flächen mit CCA-Werten über 81, die innerhalb des Puffers liegen wird kein neuer Wert zugewiesen, sie behalten ihren alten Wert
+# [G] FLÄCHEN IM BEREICH DES PUFFERS MIT CCA-WERTEN KLEINER 81 ERHALTEN EINE ERHÖHUNG DES CCA-WERTES UM 20 (DER CCA-WERT VERFÜGT ÜBER KEINE KOMMASTELLE)
+# FLÄCHEN MIT CCA-WERTEN ÜBER 81, DIE INNERHALB DES PUFFERS LIEGEN WIRD KEIN NEUER WERT ZUGEWIESEN, SIE BEHALTEN IHREN ALTEN WERT
 
 with arcpy.da.UpdateCursor(lbm_Stadt_puf_sing, ['CCA', 'CCA_puf']) as cursorCLC:
     for rowCLC_CCA80 in cursorCLC:
@@ -687,15 +686,15 @@ with arcpy.da.UpdateCursor(lbm_Stadt_puf_sing, ['CCA', 'CCA_puf']) as cursorCLC:
         cursorCLC.updateRow(rowCLC_CCA80)
     #del rowCLC_CCA80, cursorCLC
 
-# Merge the buffered areas with the original dataset: 
-# 1) Erase those areas from the original dataset which overlap with the buffer area.
-# 2) Then merge the erased feature with the buffered feature.
-# 3) Give the areas that were not in the buffer area the CCA value from the original dataset (insert into CCA_Puf - Column).  
+# MERGE THE BUFFERED AREAS WITH THE ORIGINAL DATASET: 
+# 1) ERASE THOSE AREAS FROM THE ORIGINAL DATASET WHICH OVERLAP WITH THE BUFFER AREA.
+# 2) THEN MERGE THE ERASED FEATURE WITH THE BUFFERED FEATURE.
+# 3) GIVE THE AREAS THAT WERE NOT IN THE BUFFER AREA THE CCA VALUE FROM THE ORIGINAL DATASET (INSERT INTO CCA_PUF - COLUMN).  
     
-# [G] Füge die gepufferten Flächen mit dem Ursprungsdatensatz zusammen:
-# 1) Radiere dazu die Flächen aus dem Urpsrungsdatensatz weg (erase), die sich im Bereich des Puffers befinden.
-# 2) Füge anschließend das radierte Feature mit dem gepufferten Feature zusammen (merge).
-# 3) Gebe den Flächen, die sich nicht im Bereich der Pufferflächen befanden den CCA-Wert aus dem Ursprungsdatensatz wieder (einfügen in die CCA_Puf-Spalte)
+# [G] FÜGE DIE GEPUFFERTEN FLÄCHEN MIT DEM URSPRUNGSDATENSATZ ZUSAMMEN:
+# 1) RADIERE DAZU DIE FLÄCHEN AUS DEM URPSRUNGSDATENSATZ WEG (ERASE), DIE SICH IM BEREICH DES PUFFERS BEFINDEN.
+# 2) FÜGE ANSCHLIESSEND DAS RADIERTE FEATURE MIT DEM GEPUFFERTEN FEATURE ZUSAMMEN (MERGE).
+# 3) GEBE DEN FLÄCHEN, DIE SICH NICHT IM BEREICH DER PUFFERFLÄCHEN BEFANDEN DEN CCA-WERT AUS DEM URSPRUNGSDATENSATZ WIEDER (EINFÜGEN IN DIE CCA_PUF-SPALTE)
 
 lbm_Stadt_erase = output_gdb_3 + "\\lbm_Stadt_erase"
 arcpy.analysis.Erase(lbm_Stadt_Baumbed_2ha_sing, lbm_Stadt_puf_sing, lbm_Stadt_erase, "")
@@ -715,8 +714,8 @@ codeblock_CCA_puf = """def test(CCA_puf, CCA):
 
 arcpy.CalculateField_management(lbm_Stadt_merge_sing, "CCA_puf", expression_CCA_puf, "", codeblock_CCA_puf)
 
-# Calculate weighted average cooling capacity for each city
-# [G] Durchschnittlichen gewichteten Mittelwert der Kühlkapazität für jede Stadt berechnen
+# CALCULATE WEIGHTED AVERAGE COOLING CAPACITY FOR EACH CITY
+# [G] DURCHSCHNITTLICHEN GEWICHTETEN MITTELWERT DER KÜHLKAPAZITÄT FÜR JEDE STADT BERECHNEN
 
 print("ID der Städte anhängen")
 lbm_Stadt_merge_AGS = output_gdb_3 + "\\lbm_Stadt_merge_AGS"
@@ -725,8 +724,8 @@ arcpy.analysis.Intersect([lbm_Stadt_merge_sing, vg_25_sel_Stadt_UA], lbm_Stadt_m
 lbm_Stadt_merge_AGS_sing = output_gdb_3 + "\\lbm_Stadt_merge_AGS_sing"
 arcpy.management.MultipartToSinglepart(lbm_Stadt_merge_AGS, lbm_Stadt_merge_AGS_sing)
 
-# Calculate CCA-field with weighted CCA values multiplied with the area
-# CCA-Feld berechnen mit gewichteten CCA-Werten multipliziert mit der Fläche
+# CALCULATE CCA-FIELD WITH WEIGHTED CCA VALUES MULTIPLIED WITH THE AREA
+# CCA-FELD BERECHNEN MIT GEWICHTETEN CCA-WERTEN MULTIPLIZIERT MIT DER FLÄCHE
 
 print("Feld für nach Flächengröße gewichtete CCA-Werte anhängen")
 if len(arcpy.ListFields(lbm_Stadt_merge_AGS_sing, "CCA_Area")) > 0:
@@ -741,8 +740,8 @@ stat_fields_1 = [['CCA_Area', 'Sum'], ['Shape_Area', 'Sum']]
 case_fields_1 = ['GEN']               # 'GEN':  ID-Feld der Städte aus VG 25
 arcpy.Statistics_analysis(lbm_Stadt_merge_AGS_sing, tab_CCA_gew_Area, stat_fields_1, case_fields_1)
 
-# Calculate field with weighted average of CCA values per city.
-# [G] Feld berechnen mit gewichteten Mittelwert der CCA-Werte je Stadt
+# CALCULATE FIELD WITH WEIGHTED AVERAGE OF CCA VALUES PER CITY.
+# [G] FELD BERECHNEN MIT GEWICHTETEM MITTELWERT DER CCA-WERTE JE STADT
 print("Feld berechnen mit gewichteten Mittelwerten der CCA-Werte je Stadt")
 if len(arcpy.ListFields(tab_CCA_gew_Area, "CCA_Mean_gew")) > 0:
     print("Feld schon vorhanden")
@@ -755,11 +754,11 @@ arcpy.management.JoinField(vg_25_sel_Stadt_UA, "GEN", tab_CCA_gew_Area, "GEN")
 CCA_gew_Area_vg25_GEM_Selektion_Stadt = output_gdb_3 + "\\CCA_gew_Area_vg25_GEM"
 arcpy.CopyFeatures_management(vg_25_sel_Stadt_UA, CCA_gew_Area_vg25_GEM_Selektion_Stadt)
 
-# Appended fields will be removed in the dataset vg_25_sel_stadt_ua again, thereby no more fields will be appended everytime the script is run again. 
-# More and more additional columns are appended
+# APPENDED FIELDS WILL BE REMOVED IN THE DATASET vg_25_Sel_Stadt_UA , THEREBY NO MORE FIELDS WILL BE APPENDED EVERYTIME THE SCRIPT IS RUN AGAIN. 
+# MORE AND MORE ADDITIONAL COLUMNS ARE APPENDED
 
-# [G] Angehängte Felder werden im Datensatz VG_25_sel_Stadt_UA wieder entfernt, damit nicht bei jedem neuen Durchgang des Skriptes 
-# mehr und mehr zusätzliche Spalten angehängt werden
+# [G] ANGEHÄNGTE FELDER WERDEN IM DATENSATZ vg_25_Sel_Stadt_UA ENTFERNT, DAMIT NICHT BEI JEDEM NEUEN DURCHGANG DES SKRIPTES 
+# MEHR UND MEHR ZUSÄTZLICHE SPALTEN ANGEHÄNGT WERDEN
 
 print("angehängte Felder im ursprünglichen VG_25_sel_Stadt_UA-Datensatz wieder löschen")
 FCfields = [f.name for f in arcpy.ListFields(vg_25_sel_Stadt_UA)]
@@ -770,12 +769,11 @@ arcpy.DeleteField_management(vg_25_sel_Stadt_UA, Felder_loeschen)
 
 
 # EINWOHNERANZAHL MIT EINBEZIEHEN
-    # Zusammenfassung der Berechnung:
-    # Verschneiden des Einwohnergrids mit dem Kühlkapazitätsdatensatz
-    # Einwohneranzahl innerhalb der durch die Verschneidung zerteilten Grid-Zellen neu ermitteln
-    # Berechnung der Einwohneranteile, die in oder im 200 m Pufferumkreis von Flächen mit guter bis sehr guter Kühlung leben
-    # Flächen mit guter bis sehr guter Kühlung zählen zu der CCA-Klasse 80-100, dies entspricht den CCA-Werten 61-100 )
-    # die Berechnung der Einwohneranteile geschieht für jede Stadt seperat
+    # 1) Verschneiden des Einwohnergrids mit dem Kühlkapazitätsdatensatz
+    # 2) Einwohneranzahl innerhalb der durch die Verschneidung zerteilten Grid-Zellen neu ermitteln
+    # 3) Berechnung der Einwohneranteile, die in oder im 200 m Pufferumkreis von Flächen mit guter bis sehr guter Kühlung leben
+    # 4) Flächen mit guter bis sehr guter Kühlung zählen zu der CCA-Klasse 80-100, dies entspricht den CCA-Werten 61-100 )
+    # 5) Die Berechnung der Einwohneranteile geschieht für jede Stadt seperat
 
 lbm_Stadt_EW = output_gdb_3 + "\\lbm_Stadt_EW"
 arcpy.analysis.Intersect([lbm_Stadt_merge_sing, Einwohnergrid], lbm_Stadt_EW, "ALL", "", "INPUT")
