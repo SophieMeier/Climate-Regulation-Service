@@ -57,7 +57,7 @@ The output datasets (vector polygons) are:
 
 ARTICLE ASSOCIATED WITH THIS MODEL:
 
-Meier, S., Syrbe, R.-U., Moyzes, M., Grunewald, K. (2022): Vorschlag für einen Klimaregulationsindikator. Naturschutz und Landschaftsplanung. [language: German]
+Meier, S., Syrbe, R.-U., Moyzes, M., Grunewald, K. (2022): Klimaregulation in Städten als Ökosystemleistung. Vorschlag eines nationalen Indikators zur Bewertung der Ökosystemleistung Klimaregulation in Städten. Naturschutz und Landschaftsplanung 54: 20-29. [German]
 
 
 LINK TO DATA RESOURCES AND LITERATURE
@@ -76,4 +76,9 @@ Frankfurt (Main), S.63. URL: https://gdz.bkg.bund.de/index.php/default/digitale-
 https://doi.org/10.26084/ioerfdz-r10-urbgrn2018
 
 * Zardo, L., Geneletti, D., Pérez-Soba, M. und van Eupen, M. (2017): Estimating the cooling capacity of green infrastructures to support urban planning. Ecosystem Services: 26: 225-235. https://doi.org/10.1016/j.ecoser.2017.06.016
+
+
+FUNDING AND SUPPORT
+
+This work was funded by the German Federal Agency of Nature Conservation (Bundesamt für Naturschutz). Grant number: ID3518810400
 
