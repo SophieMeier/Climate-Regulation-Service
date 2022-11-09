@@ -5,6 +5,8 @@
 # LANGUAGE DOCUMENTATION: English & German [G]
 # LANGUAGE VARIABLES: German
 
+# INTERMEDIATE RESULTS IN THE MODEL WILL NOT BE DELETED AUTOMATICALLY
+
 ### INDICATOR TO ESTIMATE CLIMATE REGULATION IN CITIES
 ### INDIKATOR ZUR BEWERTUNG DER KLIMAREGULATION IN STÄDTEN
 
@@ -662,10 +664,8 @@ arcpy.management.RepairGeometry(lbm_Stadt_puf, "DELETE_NULL", "")
 lbm_Stadt_puf_sing = output_gdb_3 + "\\lbm_Stadt_puf_sing"
 arcpy.management.MultipartToSinglepart(lbm_Stadt_puf, lbm_Stadt_puf_sing)
 
-# ADD FIELD FOR COOLING CAPACITY (CCA)
-# [G] FELD FÜR KÜHLKAPAZITÄT ANHÄNGEN (CCA)
-
-print("Feld für Wert des Climate Cooling Assessments anhängen CCA")
+print("Append field for cooling capacity (CCA)")
+print("Feld für Kühlkapazität anhängen (CCA)")
 if len(arcpy.ListFields(lbm_Stadt_puf_sing, "CCA_puf")) > 0:
     print("Feld schon vorhanden")
 else:
@@ -714,19 +714,28 @@ codeblock_CCA_puf = """def test(CCA_puf, CCA):
 
 arcpy.CalculateField_management(lbm_Stadt_merge_sing, "CCA_puf", expression_CCA_puf, "", codeblock_CCA_puf)
 
-# CALCULATE WEIGHTED AVERAGE COOLING CAPACITY FOR EACH CITY
-# [G] DURCHSCHNITTLICHEN GEWICHTETEN MITTELWERT DER KÜHLKAPAZITÄT FÜR JEDE STADT BERECHNEN
 
-print("ID der Städte anhängen")
+# --> RESULT DATASET lbm_Stadt_merge_sing -->  CONTAINS PHYSICAL COOLING CAPACITY PER AREA
+# --> EREGEBNISDATENSATZ lbm_Stadt_merge_sing --> BEINHALTET PHYSISCHE KÜHLLEISTUNG JE FLÄCHE
+
+
+# NEXT STEP: CALCULATE WEIGHTED AVERAGE COOLING CAPACITY FOR EACH CITY
+# 1) Calculate CCA-values weighted by the area
+# 2) Calculate weighted average of CCA values per city
+
+# [G] NÄCHSTER SCHRITT: DURCHSCHNITTLICHEN GEWICHTETEN MITTELWERT DER KÜHLKAPAZITÄT FÜR JEDE STADT BERECHNEN
+# 1) Gewichte die CCA-Werte mit der Fläche 
+# 2) Gewichteten CCA-Mittelwerten je Stadt berechnen
+
+print("Apped ID-column of the cities to the dataset")
+print("ID-Spalte der Städte an den Datensatz anhängen")
 lbm_Stadt_merge_AGS = output_gdb_3 + "\\lbm_Stadt_merge_AGS"
 arcpy.analysis.Intersect([lbm_Stadt_merge_sing, vg_25_sel_Stadt_UA], lbm_Stadt_merge_AGS, "ALL", "", "INPUT")
 
 lbm_Stadt_merge_AGS_sing = output_gdb_3 + "\\lbm_Stadt_merge_AGS_sing"
 arcpy.management.MultipartToSinglepart(lbm_Stadt_merge_AGS, lbm_Stadt_merge_AGS_sing)
 
-# CALCULATE CCA-FIELD WITH WEIGHTED CCA VALUES MULTIPLIED WITH THE AREA
-# CCA-FELD BERECHNEN MIT GEWICHTETEN CCA-WERTEN MULTIPLIZIERT MIT DER FLÄCHE
-
+print("Attach field for CCA values weighted by area size")
 print("Feld für nach Flächengröße gewichtete CCA-Werte anhängen")
 if len(arcpy.ListFields(lbm_Stadt_merge_AGS_sing, "CCA_Area")) > 0:
     print("Feld schon vorhanden")
@@ -734,14 +743,14 @@ else:
     arcpy.AddField_management(lbm_Stadt_merge_AGS_sing, "CCA_Area", "DOUBLE", "", "", "", "", "NULLABLE", "", "")
 arcpy.management.CalculateField(lbm_Stadt_merge_AGS_sing, "CCA_Area", "(!CCA_puf!*!Shape_Area!)", "PYTHON3")
 
-print("für jede Stadt die Summe der gewichteten CCA-Werte und der Flächengröße zusammen addieren ")
+print("For each city, add the sum of the weighted CCA values and the area size together.")
+print("Für jede Stadt die Summe der gewichteten CCA-Werte und der Flächengröße zusammen addieren")
 tab_CCA_gew_Area = output_gdb_3 + "\\tab_CCA_gew_Area"
 stat_fields_1 = [['CCA_Area', 'Sum'], ['Shape_Area', 'Sum']]
 case_fields_1 = ['GEN']               # 'GEN':  ID-Feld der Städte aus VG 25
 arcpy.Statistics_analysis(lbm_Stadt_merge_AGS_sing, tab_CCA_gew_Area, stat_fields_1, case_fields_1)
 
-# CALCULATE FIELD WITH WEIGHTED AVERAGE OF CCA VALUES PER CITY.
-# [G] FELD BERECHNEN MIT GEWICHTETEM MITTELWERT DER CCA-WERTE JE STADT
+print("Calculate Field with weighted average of CCA values per city")
 print("Feld berechnen mit gewichteten Mittelwerten der CCA-Werte je Stadt")
 if len(arcpy.ListFields(tab_CCA_gew_Area, "CCA_Mean_gew")) > 0:
     print("Feld schon vorhanden")
@@ -749,6 +758,7 @@ else:
     arcpy.AddField_management(tab_CCA_gew_Area, "CCA_Mean_gew", "DOUBLE", "", "", "", "", "NULLABLE", "", "")
 arcpy.management.CalculateField(tab_CCA_gew_Area, "CCA_Mean_gew", "(!SUM_CCA_Area!/!SUM_Shape_Area!)", "PYTHON3")
 
+print("the result table with the weighted CCA values will be attached to the feature with the municipality boundaries (VG25) to display the result graphically")
 print("die Ergebnistabelle mit den gewichteten CCA-Werten werden an das Feature mit den Gemeindegrenzen anhängen (VG25), um das Ergebnis grafisch darzustellen")
 arcpy.management.JoinField(vg_25_sel_Stadt_UA, "GEN", tab_CCA_gew_Area, "GEN")
 CCA_gew_Area_vg25_GEM_Selektion_Stadt = output_gdb_3 + "\\CCA_gew_Area_vg25_GEM"
@@ -760,6 +770,7 @@ arcpy.CopyFeatures_management(vg_25_sel_Stadt_UA, CCA_gew_Area_vg25_GEM_Selektio
 # [G] ANGEHÄNGTE FELDER WERDEN IM DATENSATZ vg_25_Sel_Stadt_UA ENTFERNT, DAMIT NICHT BEI JEDEM NEUEN DURCHGANG DES SKRIPTES 
 # MEHR UND MEHR ZUSÄTZLICHE SPALTEN ANGEHÄNGT WERDEN
 
+print("delete appended fields in the original VG_25_sel_Stadt_UA record again")
 print("angehängte Felder im ursprünglichen VG_25_sel_Stadt_UA-Datensatz wieder löschen")
 FCfields = [f.name for f in arcpy.ListFields(vg_25_sel_Stadt_UA)]
 nicht_loeschen = ['ADE', 'GF', 'BSG', 'RS', 'AGS', 'SDV_RS', 'GEN', 'BEZ', 'IBZ', 'BEM', 'NBD', 'SN_L', 'SN_R', 'SN_K', 'SN_V1', 'SN_V2', 'SN_G',
@@ -767,13 +778,23 @@ nicht_loeschen = ['ADE', 'GF', 'BSG', 'RS', 'AGS', 'SDV_RS', 'GEN', 'BEZ', 'IBZ'
 Felder_loeschen = list(set(FCfields) - set(nicht_loeschen))
 arcpy.DeleteField_management(vg_25_sel_Stadt_UA, Felder_loeschen)
 
+# --> CALCULATION OF PHYSICAL COOLING PER CITY COMPLETED (result data set: vg_25_sel_city_UA).
+# --> BERECHNUNG DER PHYSISCHEN KÜHLLEISTUNG JE STADT ABGESCHLOSSEN (Ergebnisdatensatz: vg_25_sel_Stadt_UA)
 
-# EINWOHNERANZAHL MIT EINBEZIEHEN
-    # 1) Verschneiden des Einwohnergrids mit dem Kühlkapazitätsdatensatz
-    # 2) Einwohneranzahl innerhalb der durch die Verschneidung zerteilten Grid-Zellen neu ermitteln
-    # 3) Berechnung der Einwohneranteile, die in oder im 200 m Pufferumkreis von Flächen mit guter bis sehr guter Kühlung leben
-    # 4) Flächen mit guter bis sehr guter Kühlung zählen zu der CCA-Klasse 80-100, dies entspricht den CCA-Werten 61-100 )
-    # 5) Die Berechnung der Einwohneranteile geschieht für jede Stadt seperat
+
+# ADD NUMBER OF INHABITANTS INTO MODEL
+    # 1) Intersect the population grid with the cooling capacity dataset.
+    # 2) Determine number of inhabitants proportionally per area since the population grid has now been divided into smaller parts by the LBM-DE areas.
+    # 3) Calculate the proportion of residents living in areas with good to very good cooling or within the 100 m buffer perimeter around these areas. 
+    # (Areas with good to very good cooling belong to CCA class 80-100, this corresponds to CCA values 61-100).
+    # 4) The calculation of the population shares is done separately for each city.
+
+# [G] EINWOHNERANZAHL IN DAS MODEL MIT EINBEZIEHEN
+    # 1) Verschneiden des Einwohnergrids mit dem Kühlkapazitätsdatensatz.
+    # 2) Einwohneranzahl anteilig pro Fläche ermitteln, da das Einwohnerraster nun durch die LBM-DE-Flächen in kleinere Teile geteilt wurde.
+    # 3) Berechnung der Einwohneranteile, die in Flächen mit guter bis sehr guter Kühlung leben oder im 100 m Pufferumkreis um diese Fläche.
+    # (Flächen mit guter bis sehr guter Kühlung fallen in die CCA-Klasse 80-100, dies entspricht den CCA-Werten 61-100).
+    # 4) Die Berechnung der Einwohneranteile geschieht für jede Stadt seperat.
 
 lbm_Stadt_EW = output_gdb_3 + "\\lbm_Stadt_EW"
 arcpy.analysis.Intersect([lbm_Stadt_merge_sing, Einwohnergrid], lbm_Stadt_EW, "ALL", "", "INPUT")
@@ -781,27 +802,33 @@ arcpy.analysis.Intersect([lbm_Stadt_merge_sing, Einwohnergrid], lbm_Stadt_EW, "A
 lbm_Stadt_EW_sing = output_gdb_3 + "\\lbm_Stadt_EW_sing"
 arcpy.management.MultipartToSinglepart(lbm_Stadt_EW, lbm_Stadt_EW_sing)
 
-# Feld für korrigierte Einwohneranzahl anhängen
-print("Feld für korrgierte Anzahl der Einwohner anhängen, da Gridzellen aus Einwohnerraster durch intersect mit LBM-DE in kleinere Einheiten zerteilt wurde")
+print("Append field for number of inhabitants proportionally per area")
+print("Feld für Einwohneranzahl anteilig pro Fläche anhängen")
 if len(arcpy.ListFields(lbm_Stadt_EW_sing, "EW_kor")) > 0:
-    print("Feld schon vorhanden")
+    print("Field already exists - Feld schon vorhanden")
 else:
     arcpy.AddField_management(lbm_Stadt_EW_sing, "EW_kor", "DOUBLE", "","", "", "", "NULLABLE", "", "")
 
-# Berechnung des Anteils der Bevölkerung innerhalb der kleineren Einheiten der Gridzellen
-# 10.000 steht für die Größe der Gridzelle (100x100m)
-# Die ursprüngliche Einwohnerzahl innerhalb der 100x100m Zellen steht in Zelle "grid_code"
+# CALCULATION OF THE PROPORTION OF THE POPULATION WITHIN THE SMALLER UNITS OF THE GRID CELLS.
+# 10.000 STANDS FOR THE SIZE OF THE GRID CELL (100X100M)
+# "GRID_CODE"-CELL: THE NUMBER OF INHABITATS WITHIN THE 100X100M CELLS OF THE CENSUS RASTER.   
+
+# [G] BERECHNUNG DES ANTEILS DER BEVÖLKERUNG INNERHALB DER KLEINEREN EINHEITEN DER GRIDZELLEN
+# 10.000 STEHT FÜR DIE GRÖSSE DER GRIDZELLE (100X100M)
+# "GRID_CODE"-ZELLE: DIE EINWOHNERZAHL INNERHALB DER 100X100M ZELLEN AUS DEM ZENSUS-RASTER
+
 arcpy.CalculateField_management(lbm_Stadt_EW_sing, "EW_kor", "(!Shape_Area!/10000)*!grid_code!", "PYTHON3")
 
-# Feld für CCA-Klasse anlegen
+print("Create field for CCA-class")
 print("Feld für CCA-Klasse anlegen")
 if len(arcpy.ListFields(lbm_Stadt_EW_sing, "CCA_Klasse")) > 0:
-    print("Feld schon vorhanden")
+    print("Field already exists- Feld schon vorhanden")
 else:
     arcpy.AddField_management(lbm_Stadt_EW_sing, "CCA_Klasse", "LONG", "","", "", "", "NULLABLE", "", "")
 
-# CCA-Klasse zuweisen (20, 40, 60, 80, 100)
-print("CCA-Klasse berechnen")
+  
+print("Assign CCA class 20, 40, 60, 80, 100)
+print("CCA-Klasse zuweisen 20, 40, 60, 80, 100")
 expression = "test(!CCA_puf!, !CCA_Klasse!)"
 codeblock = """def test(CCA, CCA_Klasse):
     if CCA >= 80 and CCA <= 100:
@@ -816,8 +843,12 @@ codeblock = """def test(CCA, CCA_Klasse):
         return 20"""
 arcpy.CalculateField_management(lbm_Stadt_EW_sing, "CCA_Klasse", expression, "", codeblock)
 
-# die Berechnung der Einwohneranteile innerhalb der jeweiligen CCA-Klassen wird für jede Stadt separat ausgerechnet
-# daher wird eine ID für jede Stadt an jedes Feature angehangen (Feld 'GEN' aus VG 25)
+# THE CALCULATION OF THE POPULATION SHARES WITHIN THE RESPECTIVE CCA CLASSES IS CALCULATED SEPARATELY FOR EACH CITY.
+# THEREFORE AN ID FOR EACH CITY IS APPENDED TO EACH FEATURE (FIELD 'GEN' FROM VG 25)
+      
+# [G] DIE BERECHNUNG DER EINWOHNERANTEILE INNERHALB DER JEWEILIGEN CCA-KLASSEN WIRD FÜR JEDE STADT SEPARAT AUSGERECHNET
+# DAHER WIRD EINE ID FÜR JEDE STADT AN JEDES FEATURE ANGEHANGEN (FELD 'GEN' AUS VG 25)
+      
 print("ID der Städte anhängen")
 lbm_Stadt_EW_AGS = output_gdb_3 + "\\lbm_Stadt_EW_AGS"
 arcpy.analysis.Intersect([lbm_Stadt_EW_sing, vg_25_sel_Stadt_UA], lbm_Stadt_EW_AGS, "ALL", "", "INPUT")
