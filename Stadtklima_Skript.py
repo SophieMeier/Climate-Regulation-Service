@@ -908,6 +908,10 @@ arcpy.management.JoinField(vg_25_sel_Stadt_UA, "GEN", tab_EW_CCA_80_und_mehr, "G
 CCA_80_u_mehr_Ant_EW_vg25_GEM_Selektion_Stadt = output_gdb_3 + "\\CCA_80_u_mehr_Ant_EW_vg25_GEM"
 arcpy.CopyFeatures_management(vg_25_sel_Stadt_UA, CCA_80_u_mehr_Ant_EW_vg25_GEM_Selektion_Stadt)
 
+      
+# --> RESULT DATASET 'CCA_80_u_mehr_Ant_EW_vg25_GEM' -->  CONTAINS PHYSICAL COOLING CAPACITY PER AREA
+# --> EREGEBNISDATENSATZ 'CCA_80_u_mehr_Ant_EW_vg25_GEM' --> BEINHALTET PHYSISCHE KÜHLLEISTUNG JE FLÄCHE      
+      
 # CLEARN DATASET: APPENDED FIELDS ARE REMOVED IN THE DATASET VG_25_sel_Stadt_UA
 # [G] DATENSATZ BEREINIGEN. ANGEHÄNGTE FELDER WERDEN IM DATENSATZ VG_25_sel_Stadt_UA 
 
