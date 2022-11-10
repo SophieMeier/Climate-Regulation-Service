@@ -644,7 +644,6 @@ print("Dissolven der unversiegelten Flächen mit Kühlkapazitätswerten über 80
 CCA_groesser_80 = output_gdb_3 + "\\CCA_groesser_80"
 arcpy.Select_analysis(lbm_Stadt_Baumbed_2ha_sing, CCA_groesser_80, "CCA > 80")
 
-
 CCA_groesser_80_dis = output_gdb_3 + "\\CCA_groesser_80_dis"
 arcpy.analysis.PairwiseDissolve(CCA_groesser_80, CCA_groesser_80_dis, "", "", "SINGLE_PART")
 
@@ -714,10 +713,8 @@ codeblock_CCA_puf = """def test(CCA_puf, CCA):
 
 arcpy.CalculateField_management(lbm_Stadt_merge_sing, "CCA_puf", expression_CCA_puf, "", codeblock_CCA_puf)
 
-
 # --> RESULT DATASET lbm_Stadt_merge_sing -->  CONTAINS PHYSICAL COOLING CAPACITY PER AREA
 # --> EREGEBNISDATENSATZ lbm_Stadt_merge_sing --> BEINHALTET PHYSISCHE KÜHLLEISTUNG JE FLÄCHE
-
 
 # NEXT STEP: CALCULATE WEIGHTED AVERAGE COOLING CAPACITY FOR EACH CITY
 # 1) Calculate CCA-values weighted by the area
@@ -781,7 +778,6 @@ arcpy.DeleteField_management(vg_25_sel_Stadt_UA, Felder_loeschen)
 # --> CALCULATION OF PHYSICAL COOLING PER CITY COMPLETED (result data set: vg_25_sel_city_UA).
 # --> BERECHNUNG DER PHYSISCHEN KÜHLLEISTUNG JE STADT ABGESCHLOSSEN (Ergebnisdatensatz: vg_25_sel_Stadt_UA)
 
-
 # ADD NUMBER OF INHABITANTS INTO MODEL
     # 1) Intersect the population grid with the cooling capacity dataset.
     # 2) Determine number of inhabitants proportionally per area since the population grid has now been divided into smaller parts by the LBM-DE areas.
@@ -825,8 +821,7 @@ if len(arcpy.ListFields(lbm_Stadt_EW_sing, "CCA_Klasse")) > 0:
     print("Field already exists- Feld schon vorhanden")
 else:
     arcpy.AddField_management(lbm_Stadt_EW_sing, "CCA_Klasse", "LONG", "","", "", "", "NULLABLE", "", "")
-
-    
+   
 print("Assign CCA class 20, 40, 60, 80, 100)
 print("CCA-Klasse zuweisen 20, 40, 60, 80, 100")
 expression = "test(!CCA_puf!, !CCA_Klasse!)"
@@ -845,7 +840,7 @@ arcpy.CalculateField_management(lbm_Stadt_EW_sing, "CCA_Klasse", expression, "",
 
 # THE CALCULATION OF THE POPULATION SHARES WITHIN THE RESPECTIVE CCA CLASSES IS CALCULATED SEPARATELY FOR EACH CITY.
 # THEREFORE, AN ID FOR EACH CITY IS APPENDED TO EACH FEATURE (FIELD 'GEN' FROM VG 25)
-      
+
 # [G] DIE BERECHNUNG DER EINWOHNERANTEILE INNERHALB DER JEWEILIGEN CCA-KLASSEN WIRD FÜR JEDE STADT SEPARAT AUSGERECHNET
 # DAHER WIRD EINE ID FÜR JEDE STADT AN JEDES FEATURE ANGEHANGEN (FELD 'GEN' AUS VG 25)
 
@@ -868,47 +863,61 @@ stat_fields_2 = [['EW_kor', 'Sum']]
 case_field_2 = ['GEN']
 arcpy.Statistics_analysis(lbm_Stadt_EW_AGS, tab_EW_AGS, stat_fields_2, case_field_2)
 
-print("Merge the 'Number of inhabitants per CCA level per city' field with the 'Total number of inhabitants' field into one record.")    
+print("Merge the 'Number of inhabitants per CCA level per city' field with the 'total number of inhabitants' field into one dataset")    
 print("das Feld mit der 'Einwohneranzahl je CCA-Stufe je Stadt'  mit dem Feld zur 'Gesamteinwohnerzahl insgesamt' in einen Datensatz zusammenführen")
 arcpy.management.JoinField(tab_EW_CCA, "GEN", tab_EW_AGS, "GEN")
 tab_EW_CCA_AGS = output_gdb_3 + "\\tab_EW_CCA_AGS"
 arcpy.conversion.TableToTable(tab_EW_CCA, output_gdb_3, "tab_EW_CCA_AGS", "", "", "")
 
-print("Calculate the PROPORTION of inhabitants for each CCA class.)
+print("Calculate the PROPORTION of inhabitants for each CCA class")
 print("Berechne den Anteil der Einwohner für jede CCA-Klasse")
 if len(arcpy.ListFields(tab_EW_CCA_AGS, "EW_Ant_CCA")) > 0:
     print("Feld schon vorhanden")
 else:
     arcpy.AddField_management(tab_EW_CCA_AGS, "EW_Ant_CCA", "DOUBLE", "","", "", "", "NULLABLE", "", "")
 
-# FELD "SUM_EW_kor": SUMME DER EINWOHNER AUS DEN KLASSEN
-# FELD "SUM_EW_kor_1": SUMME DER EINWOHNER INSGESAMT IN DER STADT
+# FiELD "SUM_EW_kor": SUM OF THE INHABITANTS OF EACH CCA CLASS
+# [G] FELD "SUM_EW_kor": SUMME DER EINWOHNER je CCA-KLASSE
+
+# FIELD "SUM_EW_kor_1": SUM OF THE INHABITANTS IN TOTAL FOR EACH CITY     
+# [G] FELD "SUM_EW_kor_1": SUMME DER EINWOHNER INSGESAMT IN DER STADT
+    
 arcpy.CalculateField_management(tab_EW_CCA_AGS, "EW_Ant_CCA", "(!SUM_EW_kor!/!SUM_EW_kor_1!)*100", "PYTHON3")
 
-# Selektion der Einwohner, die sich in gut bis sehr gut gekühlten Gebieten aufhalten (entpricht Klasse 80 und Klasse 100, 
+# selection of inhabitants residing in well to very well cooled areas (corresponds to class 80 and class 100, 
+# that are the cooling capacity values from 61 to 100)
+
+# [G] Selektion der Einwohner, die sich in gut bis sehr gut gekühlten Gebieten aufhalten (entpricht Klasse 80 und Klasse 100, 
 # das sind die Kühlkapazitätswerte von 61 bis 100)
+
+print("select only the areas that have been assigned a cooling capacity class of 61 - 100 (corresponds to well to very well cooled areas)")
 print("nur die Flächen selektieren, denen eine Kühlkapazitäts-Klasse von 61 - 100 zugewiesen wurde (entspricht gut bis sehr gut gekühlten Flächen)")
 tab_EW_Ant_CCA_AGS_CCA_80_und_mehr = output_gdb_3 + "\\tab_EW_Ant_AGS_CCA_80_und_mehr"
 arcpy.analysis.TableSelect(tab_EW_CCA_AGS, tab_EW_Ant_CCA_AGS_CCA_80_und_mehr, "CCA_Klasse >= 80")
 
+print("add the population shares of CCA classes 80 and 100 together, each for each city")
 print("die Einwohneranteile der CCA-Klassen 80 und 100 zusammen addieren, jeweils für jede Stadt")
 tab_EW_CCA_80_und_mehr = output_gdb_3 + "\\tab_EW_CCA_80_und_mehr"
 stat_fields_3 = [['EW_Ant_CCA', 'Sum']]
-case_field_3 = ['GEN']                                  # 'GEN':  ID-Feld der Städte aus VG 25
+case_field_3 = ['GEN']                                  # 'GEN':  ID-field of the cities from VG25 / ID-Feld der Städte aus VG 25
 arcpy.Statistics_analysis(tab_EW_Ant_CCA_AGS_CCA_80_und_mehr, tab_EW_CCA_80_und_mehr, stat_fields_3, case_field_3)
 
+print("append the result table with the population shares to the feature with the municipality boundaries (VG25) to display the result graphically")
 print("die Ergebnistabelle mit den Einwohneranteilen an das Feature mit den Gemeindegrenzen anhängen (VG25), um das Ergebnis grafisch darzustellen")
 arcpy.management.JoinField(vg_25_sel_Stadt_UA, "GEN", tab_EW_CCA_80_und_mehr, "GEN")
 CCA_80_u_mehr_Ant_EW_vg25_GEM_Selektion_Stadt = output_gdb_3 + "\\CCA_80_u_mehr_Ant_EW_vg25_GEM"
 arcpy.CopyFeatures_management(vg_25_sel_Stadt_UA, CCA_80_u_mehr_Ant_EW_vg25_GEM_Selektion_Stadt)
 
-# ANGEHÄNGTE FELDER WERDEN IM DATENSATZ VG_25_sel_Stadt_UA WIEDER ENTFERNT, DAMIT NICHT BEI JEDEM DURCHGANG DES SKRIPTES 
-# MEHR UND MEHR ZUSÄTZLICHE SPALTEN ANGEHÄNGT WERDEN
-print("angehängte Felder im ursprünglichen VG_25_sel_Stadt_UA-Datensatz wieder löschen")
+# CLEARN DATASET: APPENDED FIELDS ARE REMOVED IN THE DATASET VG_25_sel_Stadt_UA
+# [G] DATENSATZ BEREINIGEN. ANGEHÄNGTE FELDER WERDEN IM DATENSATZ VG_25_sel_Stadt_UA 
+
+print("delete appended fields in the original 'VG_25_sel_Stadt_UA' record again")
+print("angehängte Felder im ursprünglichen 'VG_25_sel_Stadt_UA-Datensatz' wieder löschen")
 FCfields = [f.name for f in arcpy.ListFields(vg_25_sel_Stadt_UA)]
 nicht_loeschen = ['ADE', 'GF', 'BSG', 'RS', 'AGS', 'SDV_RS', 'GEN', 'BEZ', 'IBZ', 'BEM', 'NBD', 'SN_L', 'SN_R', 'SN_K', 'SN_V1', 'SN_V2', 'SN_G',
                   'FK_S3', 'NUTS', 'RS_0', 'AGS_0', 'WSK', 'Shape_Length', 'Shape_Area', 'Shape', 'OBJECTID_1']
 Felder_loeschen = list(set(FCfields) - set(nicht_loeschen))
 arcpy.DeleteField_management(vg_25_sel_Stadt_UA, Felder_loeschen)
 
+print("finish calculation")
 print("Berechnung abgeschlossen")
