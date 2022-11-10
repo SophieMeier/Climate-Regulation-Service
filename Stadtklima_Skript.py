@@ -826,7 +826,7 @@ if len(arcpy.ListFields(lbm_Stadt_EW_sing, "CCA_Klasse")) > 0:
 else:
     arcpy.AddField_management(lbm_Stadt_EW_sing, "CCA_Klasse", "LONG", "","", "", "", "NULLABLE", "", "")
 
-  
+    
 print("Assign CCA class 20, 40, 60, 80, 100)
 print("CCA-Klasse zuweisen 20, 40, 60, 80, 100")
 expression = "test(!CCA_puf!, !CCA_Klasse!)"
@@ -844,33 +844,38 @@ codeblock = """def test(CCA, CCA_Klasse):
 arcpy.CalculateField_management(lbm_Stadt_EW_sing, "CCA_Klasse", expression, "", codeblock)
 
 # THE CALCULATION OF THE POPULATION SHARES WITHIN THE RESPECTIVE CCA CLASSES IS CALCULATED SEPARATELY FOR EACH CITY.
-# THEREFORE AN ID FOR EACH CITY IS APPENDED TO EACH FEATURE (FIELD 'GEN' FROM VG 25)
+# THEREFORE, AN ID FOR EACH CITY IS APPENDED TO EACH FEATURE (FIELD 'GEN' FROM VG 25)
       
 # [G] DIE BERECHNUNG DER EINWOHNERANTEILE INNERHALB DER JEWEILIGEN CCA-KLASSEN WIRD FÜR JEDE STADT SEPARAT AUSGERECHNET
 # DAHER WIRD EINE ID FÜR JEDE STADT AN JEDES FEATURE ANGEHANGEN (FELD 'GEN' AUS VG 25)
-      
+
+print("Add ID of the cities")      
 print("ID der Städte anhängen")
 lbm_Stadt_EW_AGS = output_gdb_3 + "\\lbm_Stadt_EW_AGS"
 arcpy.analysis.Intersect([lbm_Stadt_EW_sing, vg_25_sel_Stadt_UA], lbm_Stadt_EW_AGS, "ALL", "", "INPUT")
 
-print("für jede Stadt die Summe der Einwohner je CCA-Klasse zusammen addieren ")
+print("For each city, add together the sum of inhabitants per CCA class.")      
+print("für jede Stadt die Summe der Einwohner je CCA-Klasse zusammen addieren")
 tab_EW_CCA = output_gdb_3 + "\\tab_EW_CCA"
 stat_fields_1 = [['EW_kor', 'Sum']]
 case_fields_1 = ['GEN', 'CCA_Klasse']               # 'GEN':  ID-Feld der Städte aus VG 25
 arcpy.Statistics_analysis(lbm_Stadt_EW_AGS, tab_EW_CCA, stat_fields_1, case_fields_1)
 
-print("für jede Stadt insgesamt die Summe des Einwohner, ungeachtet der CCA-Klasse, zusammen addieren")
+print("For each city, total the sum of the population, regardless of CCA class.")      
+print("Für jede Stadt insgesamt die Summe des Einwohner, ungeachtet der CCA-Klasse, zusammen addieren")
 tab_EW_AGS = output_gdb_3 + "\\tab_EW_AGS"
 stat_fields_2 = [['EW_kor', 'Sum']]
 case_field_2 = ['GEN']
 arcpy.Statistics_analysis(lbm_Stadt_EW_AGS, tab_EW_AGS, stat_fields_2, case_field_2)
 
+print("Merge the 'Number of inhabitants per CCA level per city' field with the 'Total number of inhabitants' field into one record.")    
 print("das Feld mit der 'Einwohneranzahl je CCA-Stufe je Stadt'  mit dem Feld zur 'Gesamteinwohnerzahl insgesamt' in einen Datensatz zusammenführen")
 arcpy.management.JoinField(tab_EW_CCA, "GEN", tab_EW_AGS, "GEN")
 tab_EW_CCA_AGS = output_gdb_3 + "\\tab_EW_CCA_AGS"
 arcpy.conversion.TableToTable(tab_EW_CCA, output_gdb_3, "tab_EW_CCA_AGS", "", "", "")
 
-print("Feld für ANTEIL DER EINWOHNER für jede CCA-Klasse erzeugen")
+print("Calculate the PROPORTION of inhabitants for each CCA class.)
+print("Berechne den Anteil der Einwohner für jede CCA-Klasse")
 if len(arcpy.ListFields(tab_EW_CCA_AGS, "EW_Ant_CCA")) > 0:
     print("Feld schon vorhanden")
 else:
