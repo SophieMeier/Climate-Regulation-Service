@@ -47,7 +47,7 @@ output_gdb_1 = "E:/Meier/Stadtklima/output_1" + Jahr + ".gdb" # output for ...
 output_gdb_2 = "E:/Meier/Stadtklima/output_2" + Jahr + ".gdb" # output for ...
 output_gdb_3 = "E:/Meier/Stadtklima/output_3" + Jahr + ".gdb" # output for ...
 
-# DATA SETS - find description in ReadMe / DATENSÄTZE - Beschreibung im ReadMe
+# DATASET - find description in ReadMe / DATENSÄTZE - Beschreibung im ReadMe
 # Please replace by own paths # Bitte eigenen Pfad angeben
 lbm_DE = "D:/tarox1_user5/OESL_P644_671/LBM/oriG/lbm_de_2018.gdb/lbm_de_2018_v2"
 Einwohnergrid = "D:/tarox1_user5/OESL_P644_671/Einwohnerzahlen/zensus2011.gdb/grid_r100_zensus11ew"
@@ -412,7 +412,7 @@ codeblock = """def test(Anteil, Klasse):
 arcpy.CalculateField_management(lbm_Stadt_Baumbed, "Baumbed_Klasse", expression, "", codeblock)
 
 # LIMITATION OF THE METHOD: THE TREE PROPORTION CALCULATION FROM THE RASTER DATASET OF THE URBAN GREEN IS INACCURATE.
-# BECAUSE A TRANSFER OF THE COARSE RASTER VALUES TO THE MORE ACCURATE VECTOR DATA SET OF THE LBM-DE TAKES PLACE.
+# BECAUSE A TRANSFER OF THE COARSE RASTER VALUES TO THE MORE ACCURATE VECTOR dataset OF THE LBM-DE TAKES PLACE.
 # IN THIS WAY, TREE COVER PERCENTAGES ABOVE 100 PERCENT SOMETIMES OCCUR FOR VERY SMALL LBM-DE POLYGONS
 
 # DETERMINATION OF THE AREA SIZE OVER 2 HECTARES / UNDER 2 HECTARES
@@ -778,7 +778,7 @@ nicht_loeschen = ['ADE', 'GF', 'BSG', 'RS', 'AGS', 'SDV_RS', 'GEN', 'BEZ', 'IBZ'
 Felder_loeschen = list(set(FCfields) - set(nicht_loeschen))
 arcpy.DeleteField_management(vg_25_sel_Stadt_UA, Felder_loeschen)
 
-# --> CALCULATION OF PHYSICAL COOLING PER CITY COMPLETED (result data set: vg_25_sel_city_UA).
+# --> CALCULATION OF PHYSICAL COOLING PER CITY COMPLETED (result dataset: vg_25_sel_city_UA).
 # --> BERECHNUNG DER PHYSISCHEN KÜHLLEISTUNG JE STADT ABGESCHLOSSEN (Ergebnisdatensatz: vg_25_sel_Stadt_UA)
 
 # ADD NUMBER OF INHABITANTS INTO MODEL
