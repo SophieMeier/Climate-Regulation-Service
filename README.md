@@ -52,7 +52,7 @@ The output datasets (vector polygons) are:
 * a dataset with the percentage of inhabitants living in areas that show a good - very good cooling capacity (cooling capacity more than 60)
 
 
-## Artile associated with this work
+## Article associated with this work
 
 Meier, S., Syrbe, R.-U., Moyzes, M., Grunewald, K. (2022): Klimaregulation in Städten als Ökosystemleistung. Vorschlag eines nationalen Indikators zur Bewertung der Ökosystemleistung Klimaregulation in Städten. Naturschutz und Landschaftsplanung 54: 20-29. [German]
 
