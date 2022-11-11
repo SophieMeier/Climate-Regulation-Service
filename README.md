@@ -1,4 +1,6 @@
 
+https://doi.org/10.5281/zenodo.7010529
+
 # **INDICATOR TO ESTIMATE CLIMATE REGULATION SERVICE OF VEGETATION IN CITIES** 
 
 This python script allows to calculate the cooling capacity of cities for the atlantic zone. The case study used in the original work (*Meier et al. 2022*) are German cities with more than 50,000 inhabitants within the functional urban areas (according to Copernicus Urban Atlas). The model so far includes parameters for atlantic climate conditions but can be adapted to mediterranean and continental climate using the proposed values from *Zardo et al. (2017)*. 
@@ -56,7 +58,6 @@ The output datasets (vector polygons) are:
 
 Meier, S., Syrbe, R.-U., Moyzes, M., Grunewald, K. (2022): Klimaregulation in Städten als Ökosystemleistung. Vorschlag eines nationalen Indikators zur Bewertung der Ökosystemleistung Klimaregulation in Städten. Naturschutz und Landschaftsplanung 54: 20-29. [German]
 
-
 ## Link to data resource and literature
 
 * BKG - Bundesamt für Kartographie und Geodäsie (2017): Verwaltungsgebiete 1:25.000 (VG25) zum Gebietsstand von Deutschland vom 31.12.2016, Stand der Dokumentation: 05.04.2017. Bundesamt für Kartographie und Geodäsie (BKG), Frankfurt (Main). URL: https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/verwaltungsgebiete/verwaltungsgebiete-1-25-000-ebenen-stand-31-12-vg25-ebenen.html (Accessed: 09 Nov 2022)
@@ -78,4 +79,5 @@ https://doi.org/10.26084/ioerfdz-r10-urbgrn2018
 ## Funding and support
 
 This work was funded by the German Federal Agency of Nature Conservation (Bundesamt für Naturschutz). Grant number: ID3518810400
+
 
