@@ -24,7 +24,10 @@
 import arcpy
 import math
 from arcpy import env
-from arcpy.sa import *
+from arcpy.sa import * # Extension Spatial Analyst
+arcpy.CheckOutExtension("spatial")
+    # CheckOutExtension: only necessary when concurrent user license in ArcGISpro is used  
+    # muss nur angegeben werden wenn eine "Concurrent-user-Lizenz" bei ArcGISpro vorliegt
 arcpy.env.parallelProcessingFactor = "100%"
 arcpy.env.overwriteOutput = True
 
