@@ -17,7 +17,7 @@ The model was developed with cities in Germany (with more than 50,000 inhabitant
 Über den Bodenbedeckungstyp, den Anteil der Baumkronenbedeckung und der Flächengröße wird ein Kühlungskapazitätswert (CCA-Wert) für jede Fläche in Städten ermittelt.
 Durch die Verschneidung von Einwohnerdaten mit der Information zur Kühlungskapazität mit kann ermittelt werden, wo Einwohner in welchem Maß mit Kühlungsleistung durch urbanes Grün versorgt werden. Die Kühlkapazität is eine dimensionslose Größe mit Werten von 0 bis 100.
 Das Modell wurde auf Basis von Städten mit mehr als 50.000 Einwohnern in Deutschland ermittelt, die sich innerhalb der 'Urban Functional Areas" (Urban Atlas, Copernicus) befanden. 
-Das Modell basiert auf dem Climate Cooling Assessment (CCA) von *Zardo et al. (2017)*. Die Kühlkapazität ist eine dimensionslose Grüße von 1-100.
+Das Modell basiert auf dem Climate Cooling Assessment (CCA) von *Zardo et al. (2017)*. Die Kühlkapazität ist eine dimensionslose Größe von 1-100.
 
  
 ## Input data for the model
