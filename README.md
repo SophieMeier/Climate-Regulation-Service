@@ -33,7 +33,7 @@ This raster file needs to be converted to vector format by two steps in ArcGIS: 
 
 * '**Street_Tree**': Vector dataset from Copernicus (2021) (Urban Atlas - Street Tree layer). Time period used in the model: 2018, Release 2021 (not validated).
 
-* '**vg25_GEM_Selektion_Stad**t': Cities with more than 50,000 inhabitants. Taken from VG25, Federal Agency of Cartography and Geodesy (source: BKG 2017).
+* '**vg25_GEM_Selektion_Stadt**': Cities with more than 50,000 inhabitants. Taken from VG25, Federal Agency of Cartography and Geodesy (source: BKG 2017).
 
 * '**Urban_Functional_Areas**': Indicates those cities where Street Tree data from Urban Atlas are available (source: Copernicus 2021). Only cities (inhabitants > 50,000) were used in the model that fell in the urban functional areas. As a consequence, some cities, especially in the states of Baden-Württemberg and North Rhine Westfalia could not be considered in the modelling approach.
 
