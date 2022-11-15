@@ -46,9 +46,10 @@ The users are advised to check carefully, if they need to adapt the cooling capa
 ## Outputs dataset
 
 The output datasets (vector polygons) are: 
-* a dataset with the climate cooling capacity for each land use/land cover area 
-* a dataset with the mean climate cooling capacity of each city
-* a dataset with the percentage of inhabitants living in areas that show a good - very good cooling capacity (cooling capacity more than 60)
+* a dataset with the climate cooling capacity for each land use/land cover area ('lbm_Stadt_merge_sing', column: 'CCA_Puf')
+* a dataset with the mean climate cooling capacity of each city ('CCA_gew_Area_vg25_GEM', column: 'CCA_Mean_gew')
+* a dataset with the percentage of inhabitants living in areas that show a good to very good cooling capacity (cooling capacity more than 61) 
+('CCA_80_u_mehr_Ant_EW_vg25_GEM', column: 'SUM_EW_Ant_CCA')
 
 
 ## Article associated with this work
