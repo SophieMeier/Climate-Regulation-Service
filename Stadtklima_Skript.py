@@ -367,11 +367,11 @@ arcpy.management.CalculateField(lbm_Stadt_Baumbed, "Baumbed_Ant", "(!Baumbed_Are
 
 # FROM THE PERCENTAGE OF TREE COVER, THE TREE COVER CLASSES CAN BE DETERMINED FOR EACH POLYGON 
     # ACCORDING TO ZARDO ET AL. (2017), THE TREE COVER PERCENTAGE CLASS IS DEFINED AS FOLLOWS: 0, 20, 40, 60, 80, 100 PERCENT.
-       # !  ATTENTION, the top value (at the moment 151) may need to be adjusted again when calculating for all of Germany ! ...
+       # !  ATTENTION, the top value (at the moment 151) may need to be adjusted when calculating for your special study area !
 
 # [G] AUS DEM PROZENTUALEN ANTEIL DER BAUMBEDECKUNG KANN FÜR JEDES POLYGON DIE BAUMANTEILSKLASSEN ERMITTELT WERDEN
     # DIE BAUMANTEILSKLASSE IST NACH ZARDO ET AL. (2017) FOLGENDERMASSEN FESTGELEGT: 0, 20, 40, 60, 80, 100 PROZENT.
-    # !  ACHTUNG, der oberste Wert (im Moment 151) muss bei der Berechnung für Gesamtdeutschland eventuell nochmal angepasst werden ! 
+    # !  ACHTUNG, der oberste Wert (im Moment 151) muss bei der Berechnung für das jeweilige Untersuchungsgebiet eventuell nochmal angepasst werden ! 
 
 
 print("Create a field in which the tree share class is assigned")
