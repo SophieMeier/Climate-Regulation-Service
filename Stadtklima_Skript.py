@@ -1,5 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 
+# string above encodes special characters such as ä, ö or ü
+
 # PYTHON-VERSION 3.6 
 # SOFTWARE: PYCHARM 2019.3.5, ARCGISpro 3.0.1
 # LANGUAGE DOCUMENTATION: English & German [G]
