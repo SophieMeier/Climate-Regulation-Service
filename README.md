@@ -1,6 +1,9 @@
 
 https://doi.org/10.5281/zenodo.7010529
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7010530.svg)]
+(https://doi.org/10.5281/zenodo.7010530)
+
 # **INDICATOR TO ESTIMATE CLIMATE REGULATION SERVICE OF VEGETATION IN CITIES** 
 
 This python script allows calculating the cooling capacity of cities for the atlantic zone. The case study used in the original work (*Meier et al. 2022*) are German cities with more than 50,000 inhabitants within the so-called functional urban areas (according to Copernicus Urban Atlas). The model so far includes parameters for atlantic climate conditions but can be adapted to mediterranean and continental climate using the proposed values from *Zardo et al. (2017)*. 
