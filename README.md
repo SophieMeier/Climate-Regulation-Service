@@ -1,8 +1,4 @@
-
-https://doi.org/10.5281/zenodo.7010530
-
-![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7010530.svg)
-
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7010530.svg)](https://doi.org/10.5281/zenodo.7010530)
 
 # **INDICATOR TO ESTIMATE CLIMATE REGULATION SERVICE OF VEGETATION IN CITIES** 
 
