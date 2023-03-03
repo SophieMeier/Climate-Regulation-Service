@@ -832,7 +832,7 @@ print("Assign CCA class 20, 40, 60, 80, 100")
 print("CCA-Klasse zuweisen 20, 40, 60, 80, 100")
 expression = "test(!CCA_puf!, !CCA_Klasse!)"
 codeblock = """def test(CCA, CCA_Klasse):
-    if CCA >= 80 and CCA <= 100:
+    if CCA > 80 and CCA <= 100:
         return 100
     elif CCA > 60 and CCA <= 80:
         return 80
