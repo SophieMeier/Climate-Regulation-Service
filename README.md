@@ -23,7 +23,7 @@ Das Modell basiert auf dem Climate Cooling Assessment (CCA) von *Zardo et al. (2
 * '**lbm_DE**': Land cover model Germany - a dataset with land use and land cover types (according to CORINE land cover) from the Federal Agency of Cartography and Geodesy (BKG). Minimum mapping unit: 1 ha. The time period used in the model: 2018 (LBM-DE 2018, source: BKG 2020).
 
 * '**Einwohnergrid**': Grid with the number of habitats of the buildings in the cities. The original dataset can be obtained from the German Statistical Office and is a raster file (Zensus-Raster, source: Destatis 2015). Time period of population zensus used in the model: 2011. 
-The Zensus-raster needs to be converted to vector format by two steps in ArcGIS: 1) Raster to Point, 2) Create Fishnet with and use Points-Features created in 1) as labels. 
+The Zensus-raster was converted to vector format by two steps in ArcGIS: 1) Raster to Point, 2) Create Fishnet with and use Points-Features created in 1) as labels. 
 
 * '**Stadtgruenraster**': Raster dataset including amongst others high vegetation (trees). Three land cover types were chosen from this raster dataset to include in the climate regulation model: broad-leaved trees, coniferous trees, and built-up areas mixed with vegetation. The time period used in the model: 2018 (source: *Krüger et al. 2022*).
 
